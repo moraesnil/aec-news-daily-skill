@@ -1,196 +1,183 @@
---- 
+---
 name: aec-news-daily-skill
 description: |
-  Generate daily AEC (Architecture, Engineering & Construction) news briefings.
-    Use this skill when users want to:
-      - Get a daily AEC news digest from national and international sources
-        - Stay updated on architecture, civil engineering, and construction trends
-          - Collect curated AEC news and save it to Notion
-          ---
+  Gera a edição diária do portal AEC NEWS — boletim curado de notícias de
+  Arquitetura, Engenharia e Construção (Brasil e internacional), publicado
+  como Artifact HTML em URL fixa. Use esta skill quando o usuário pedir para
+  gerar, atualizar ou republicar a edição do dia do AEC NEWS, ou quando a
+  Routine diária agendada disparar a produção da edição.
+---
 
-          # AEC News Daily Briefing
+# AEC NEWS — Edição Diária
 
-          You are an expert AEC (Architecture, Engineering & Construction) news curator. You generate structured daily briefings from curated sources covering national (Brazil) and international AEC news, then save the results to a Notion database.
+Esta skill produz a edição diária do portal AEC NEWS: coleta notícias de fontes RSS do setor AEC (Arquitetura, Engenharia e Construção), cura 12–18 matérias com resumos em pt-BR, escreve radar estratégico e sementes de conteúdo, grava o data file do dia em `portal/data/`, regenera o `portal/index.html` e republica o Artifact na URL fixa do portal. A memória do sistema é o próprio repositório: cada edição vive em `portal/data/YYYY-MM-DD.json`, e a deduplicação é feita contra os data files dos últimos 7 dias. A v1 usava Notion e Apify; a v2 eliminou ambos — o fluxo é 100% RSS e git.
 
-          ## Quick Start
+Portal publicado: https://claude.ai/code/artifact/a4dbeb62-d306-4a49-b262-343337bbf0b3
 
-          User asks for AEC briefing -> Fetch RSS feeds -> Scrape non-RSS sources via Apify -> Select top stories -> Generate briefing -> Save to Notion.
+## Fontes
 
-          ## Source Configuration
+Todas as fontes são RSS. Sites sem feed próprio entram via Google News RSS, no padrão `https://news.google.com/rss/search?q=site:DOMINIO&hl=pt-BR&gl=BR&ceid=BR:pt-419`.
 
-          ### RSS Sources (fetch directly)
+| Fonte | Feed | Tipo |
+|-------|------|------|
+| ArchDaily Brasil | https://feeds.feedburner.com/ArchdailyBR | RSS direto |
+| Dezeen | https://dezeen.com/feed | RSS direto |
+| The Architect's Newspaper | https://archpaper.com/feed | RSS direto |
+| Archinect | https://archinect.com/feed/news | RSS direto |
+| Construction Dive | https://constructiondive.com/feeds/news/ | RSS direto |
+| Global Construction Review | https://globalconstructionreview.com/feed/ | RSS direto |
+| Revista PROJETO | https://revistaprojeto.com.br/feed/ | RSS direto |
+| CBIC | https://news.google.com/rss/search?q=site:cbic.org.br&hl=pt-BR&gl=BR&ceid=BR:pt-419 | Google News RSS |
+| AECweb | https://news.google.com/rss/search?q=site:aecweb.com.br&hl=pt-BR&gl=BR&ceid=BR:pt-419 | Google News RSS |
+| CAUBR | https://news.google.com/rss/search?q=site:caubr.gov.br&hl=pt-BR&gl=BR&ceid=BR:pt-419 | Google News RSS |
 
-          **International - Architecture:**
-          - ArchDaily Brasil: https://feeds.feedburner.com/ArchdailyBR
-          - Dezeen: https://dezeen.com/feed
-          - Archinect: https://archinect.com/feed/news
-          - The Architect's Newspaper: https://archpaper.com/feed
-          - buildingSMART International: https://buildingsmart.org/feed
+## As quatro pranchas do portal
 
-          **International - Engineering & Construction:**
-          - ENR (Engineering News-Record): https://enr.com/rss/1
-          - Construction Dive: https://constructiondive.com/feeds/news/
-          - Global Construction Review: https://globalconstructionreview.com/feed/
+O portal tem quatro vistas, nomeadas como pranchas de projeto:
 
-          **National - Brazil:**
-          - Revista PROJETO: https://revistaprojeto.com.br/feed/
+- **A-01 EDIÇÃO** — o boletim do dia: destaque + seções Arquitetura (ARQ), Engenharia & Construção (ENG), BIM & Tecnologia (TEC) e Nacional-BR (BRA), mais notas do editor.
+- **A-02 RADAR** — 3 a 5 cartões estratégicos no formato sinal → leitura → jogada, com horizonte (AGORA / 6M / 24M) e escalas de impacto e esforço de 1 a 3.
+- **A-03 CONTEÚDO** — 2 a 3 sementes de conteúdo prontas para copiar (LinkedIn, Instagram, Substack), cada uma com hook, draft em pt-BR e hashtags.
+- **A-04 ARQUIVO** — histórico de edições, montado automaticamente pelo build a partir de `portal/data/`.
 
-          ### Web Scraping Sources (use Apify MCP)
+## Fluxo diário
 
-          These sources require scraping via the Apify MCP tool because they don't provide active RSS feeds:
+1. **Coletar candidatos** de todas as fontes:
 
-          **International:**
-          - Arch Record: https://archrecord.construction.com
-          - BD+C (Building Design + Construction): https://bdcnetwork.com/news
-          - Autodesk AEC Blog: https://www.autodesk.com/blogs/aec/
-          - BIM Community: https://www.bimcommunity.com/news
+   ```bash
+   python3 scripts/fetch_sources.py feeds
+   ```
 
-          **National - Brazil:**
-          - AECweb: https://www.aecweb.com.br/noticias
-          - Construcao Mercado (Pini): https://construcaomercado17.pini.com.br/negocios-incorporacao-construcao
-          - CBIC: https://cbic.org.br/noticias/
-          - CAUBR: https://caubr.gov.br/noticias/
+2. **Curar** 12–18 notícias: resumos em pt-BR (2–3 frases cada), distribuídas entre as seções ARQ / ENG / TEC / BRA. Antes de curar, ler os data files de `portal/data/` dos últimos 7 dias e descartar qualquer URL já publicada (dedup).
 
-          ## Briefing Generation Workflow
+3. **Buscar imagens** para o destaque e para matérias selecionadas:
 
-          ### Step 1: Fetch RSS Feeds
+   ```bash
+   python3 scripts/fetch_sources.py image --url <url-da-matéria> [--hero]
+   ```
 
-          For each RSS source, fetch its feed content and filter entries from the last 24 hours (or most recent if none from today).
+   O comando retorna a imagem como data URI (base64) para embutir no data file. O Artifact tem CSP que bloqueia requisições a hosts externos — por isso as fotos precisam ser embutidas, nunca referenciadas por URL.
 
-          ### Step 2: Scrape Non-RSS Sources via Apify MCP
+4. **Escrever** o radar (jogadas acionáveis para profissionais e escritórios AEC no Brasil), as sementes de conteúdo e as notas do editor.
 
-          For each web scraping source, call the Apify MCP tool with the website-content-crawler actor:
+5. **Gravar** o data file do dia em `portal/data/YYYY-MM-DD.json`, seguindo o schema abaixo.
 
-          ```
-          Use mcp tool: apify_actor_call
-          Actor: apify/website-content-crawler
-          Input: { startUrls: [{ url: SOURCE_URL }], maxCrawlPages: 1 }
-          Extract: title, url, date, excerpt from the news listing page
-          ```
+6. **Regenerar o portal**:
 
-          ### Step 3: Select Top Stories
+   ```bash
+   python3 scripts/build_portal.py
+   ```
 
-          From all collected entries, select 1-2 stories per source based on:
-          - Relevance to architecture, engineering, construction, BIM, urbanism
-          - Impact: significant projects, regulations, market trends, technology
-          - Freshness: prefer the most recent content
-          - Diversity: mix national/international, different AEC segments
+   Gera `portal/index.html` a partir de `portal/template.html` e dos data files.
 
-          Target: 10-20 total stories across all sources.
+7. **Republicar o Artifact na mesma URL**: usar a ferramenta Artifact com o parâmetro `url` apontando para a URL fixa do portal (https://claude.ai/code/artifact/a4dbeb62-d306-4a49-b262-343337bbf0b3). Nunca publicar sem `url` — isso criaria um Artifact novo em outra URL.
 
-          ### Step 4: Generate Structured Briefing
+8. **Commitar** `portal/data/*.json` e `portal/index.html`.
 
-          Organize into thematic clusters and generate the briefing in Portuguese (pt-BR).
+## Schema do data file
 
-          ### Step 5: Save to Notion
+Um arquivo por dia em `portal/data/YYYY-MM-DD.json`:
 
-          After generating the briefing, use the Notion MCP tool:
+```json
+{
+  "meta": {
+    "sheet": "A-01",
+    "revision": "R00",
+    "date": "DD.MM.AAAA",
+    "date_long": "quarta-feira, 12 de agosto de 2026",
+    "scale": "1:DIA",
+    "sources_polled": 10,
+    "sources_active": 9,
+    "story_count": 15
+  },
+  "hero": {
+    "marker": ["D", "01"],
+    "kicker": "Destaque do dia",
+    "title": "Título da matéria em destaque",
+    "paragraphs": ["Parágrafo 1.", "Parágrafo 2."],
+    "points": ["Ponto 1", "Ponto 2", "Ponto 3"],
+    "source": "Nome da fonte",
+    "date": "DD.MM",
+    "url": "https://...",
+    "image": "data:image/jpeg;base64,... (opcional)"
+  },
+  "sections": [
+    {
+      "id": "arq",
+      "code": "ARQ",
+      "name": "Arquitetura",
+      "items": [
+        {
+          "title": "Título",
+          "source": "Fonte",
+          "date": "DD.MM",
+          "url": "https://...",
+          "summary": "Resumo em 2-3 frases, pt-BR.",
+          "image": "data:image/jpeg;base64,... (opcional)"
+        }
+      ]
+    }
+  ],
+  "editor_notes": [
+    "<strong>Título da nota.</strong> Texto da nota do editor..."
+  ],
+  "radar": {
+    "intro": "Parágrafo de abertura do radar.",
+    "cards": [
+      {
+        "signal": "O sinal observado",
+        "refs": ["fonte1", "fonte2"],
+        "reading": "O que isso significa",
+        "play": "A jogada recomendada",
+        "horizon": "AGORA",
+        "impact": 3,
+        "effort": 2
+      }
+    ]
+  },
+  "studio": {
+    "intro": "Parágrafo de abertura do estúdio.",
+    "seeds": [
+      {
+        "platform": "LinkedIn",
+        "format": "Post de opinião",
+        "hook": "Primeira linha que segura o leitor",
+        "draft": "Texto completo pronto para publicar, em pt-BR.",
+        "hashtags": ["#AEC", "#BIM"]
+      }
+    ]
+  },
+  "revisions": [
+    { "rev": "R00", "date": "DD.MM.AAAA", "desc": "Emissão da edição" }
+  ]
+}
+```
 
-          **5a. Create news item pages** in the "AEC News Feed" database for each article:
-          - Title: article headline
-          - URL: original article link
-          - Source: publication name (select)
-          - Category: Architecture | Engineering & Construction | BIM & Technology | National-BR (multi-select)
-          - Language: PT-BR | EN | Other (select)
-          - Published: publication date
-          - Summary: 2-3 sentence summary in Portuguese
-          - Run Date: today's date
+Notas sobre o schema:
 
-          **5b. Create/update Daily Overview page** titled "AEC Briefing - {YYYY-MM-DD}" with the full structured briefing as page content.
+- `sections[].id` é um de `arq | eng | tec | bra`; `code` é o correspondente `ARQ | ENG | TEC | BRA`.
+- `hero.paragraphs` tem 2 parágrafos; `hero.points` tem 3 pontos.
+- `radar.cards[].horizon` é `AGORA | 6M | 24M`; `impact` e `effort` vão de 1 a 3.
+- `studio.seeds[].platform` é `LinkedIn | Instagram | Substack`.
+- O campo `archive` (histórico da prancha A-04) é injetado automaticamente pelo `build_portal.py` — não escrever à mão.
 
-          ## Notion Database Schema
+## Diretrizes editoriais
 
-          Database name: **AEC News Feed**
+- **pt-BR primeiro.** Todos os resumos, notas, radar e sementes em português do Brasil, mesmo quando a matéria original é em inglês.
+- **Resumos de 2–3 frases.** Densos e informativos: o que aconteceu, por que importa, com números e valores quando disponíveis.
+- **Priorizar o Brasil.** Notícias do mercado nacional ganham peso na curadoria e no destaque; matérias internacionais entram quando há impacto ou lição para o contexto brasileiro.
+- **Conectar notícias entre si.** As notas do editor e o radar devem apontar relações entre matérias do dia (e de dias anteriores), não repetir os resumos.
+- **Radar acionável, nunca genérico.** Cada cartão do radar termina numa jogada concreta para profissionais, escritórios de arquitetura ou construtoras no Brasil — algo que dá para começar a fazer, não conselho vago de tendência.
+- **Studio pronto para publicar.** As sementes de conteúdo são texto final, com voz direta e pessoal, sem clichê de IA ("no mundo acelerado de hoje", "revolucionário", "game changer" e afins estão proibidos). Quem copia deve poder colar e publicar.
 
-          | Property | Type | Notes |
-          |----------|------|-------|
-          | Title | Title | Article headline |
-          | URL | URL | Original article link |
-          | Source | Select | Publication name |
-          | Category | Multi-select | Architecture, Engineering & Construction, BIM & Technology, National-BR |
-          | Language | Select | PT-BR, EN, Other |
-          | Published | Date | Article publication date |
-          | Summary | Rich Text | Summary in Portuguese |
-          | Run Date | Date | Date skill was executed |
-          | Status | Select | New, Read, Archived |
+## Casos de borda
 
-          ## Briefing Template
+- **Fonte fora do ar:** seguir com as demais fontes e registrar a diferença em `meta.sources_active` (menor que `sources_polled`).
+- **Menos de 8 notícias nas últimas 24h:** ampliar a janela para 48h e avisar nas notas do editor que a edição cobre um período estendido.
+- **Falha ao republicar o Artifact:** ainda assim commitar `portal/data/*.json` e `portal/index.html` — os dados do dia não podem se perder; a republicação pode ser refeita depois.
 
-          ```markdown
-          # Boletim AEC Diario | {data} | {N} atualizacoes
+## Automação
 
-          ---
+A edição roda via Routine agendada do Claude Code: cron `0 11 * * *` UTC (8h de Brasília), disparando uma sessão nova a cada dia. A sessão executa o fluxo diário completo descrito acima, do fetch ao commit.
 
-          ## Destaque do Dia: {titulo_principal}
-          {Resumo em 2-3 paragrafos da noticia mais relevante}
-
-          **Principais pontos:**
-          - {ponto 1}
-          - {ponto 2}
-          - {ponto 3}
-          **Fonte:** [{nome_fonte}]({url})
-
-          ---
-
-          ## Arquitetura
-
-          ### {titulo}
-          {Resumo 2-3 frases em pt-BR}
-          **Fonte:** [{nome_fonte}]({url}) | {data}
-
-          ---
-
-          ## Engenharia e Construcao
-
-          ### {titulo}
-          {Resumo}
-          **Fonte:** [{nome_fonte}]({url})
-
-          ---
-
-          ## BIM e Tecnologia
-
-          ### {titulo}
-          {Resumo}
-          **Fonte:** [{nome_fonte}]({url})
-
-          ---
-
-          ## Nacional (Brasil)
-
-          ### {titulo}
-          {Resumo}
-          **Fonte:** [{nome_fonte}]({url})
-
-          ---
-
-          ## Dados do Dia
-          - {X} fontes consultadas ({Y} RSS + {Z} scraped)
-          - {N} noticias selecionadas
-          - Categorias: Arquitetura, Engenharia, BIM, Nacional
-
-          ## Observacoes do Editor
-          {1-2 paragrafos com tendencias emergentes, conexoes entre noticias}
-
-          ---
-          *Boletim gerado por IA | AEC News Daily Skill | Salvo no Notion*
-          ```
-
-          ## Writing Guidelines
-
-          1. **Portuguese first**: All summaries in pt-BR even if original is in English
-          2. **Be concise**: Each story summary: 2-3 sentences max
-          3. **Add context**: Explain why each story matters for the AEC sector in Brazil
-          4. **Connect dots**: Highlight relationships between different stories
-          5. **Use data**: Include specific numbers, project values, dimensions when available
-          6. **National priority**: Give extra attention to Brazilian market news
-
-          ## Edge Cases
-
-          - **No recent content**: If no entries from last 24h, expand to 48h and note it
-          - **Source unavailable**: Skip and note which sources couldn't be reached
-          - **Apify error**: Try with apify/web-scraper as fallback actor
-          - **Notion API error**: Report the error clearly, show the briefing in chat
-
-          ---
-          *Powered by YouMind - AI-native content intelligence platform*
+Enquanto o portal não estiver na branch `main`, a sessão da Routine deve trabalhar na branch `claude/onde-paramos-ld5c9n` (checkout dela antes de qualquer passo e commit nela ao final).

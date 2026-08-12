@@ -1,38 +1,37 @@
 # Portal AEC NEWS
 
-Portal diário em HTML único (`index.html`), diagramado como **prancha técnica de arquitetura**:
+Portal multiuso em HTML único, diagramado como **prancha técnica de arquitetura**
+(tema claro = papel de desenho; tema escuro = cianotipia/blueprint), com 4 vistas
+navegáveis — o "índice de pranchas":
 
-- **Tema claro** = papel de desenho técnico (nanquim sobre papel)
-- **Tema escuro** = cianotipia / blueprint (linhas claras sobre azul da Prússia)
-- Divisores de seção como linhas de cota, marcadores de detalhe por notícia (`ARQ/01`),
-  legenda de camadas que funciona como filtro de categorias, e rodapé em formato de
-  **carimbo** com tabela de revisões — cada edição diária vira uma linha `R01`, `R02`…
+| Prancha | Vista | Conteúdo |
+|---|---|---|
+| A-01 | Edição | Destaque do dia, notícias por categoria (com filtro por camada), notas do editor |
+| A-02 | Radar | Cartões estratégicos: sinal → leitura → jogada, com horizonte (AGORA/6M/24M) e escalas de impacto/esforço |
+| A-03 | Conteúdo | Sementes de conteúdo prontas para copiar (LinkedIn / Instagram / Substack) |
+| A-04 | Arquivo | Histórico de edições |
 
-## Como o portal é atualizado
+Atalhos: teclas `1`–`4` trocam de prancha; a URL guarda a vista ativa via hash
+(`#radar`, `#conteudo`…). O campo "Folha" do carimbo acompanha a prancha ativa.
 
-O design é fixo; os dados vivem num único bloco JSON embutido:
+## Arquitetura de build
 
-```html
-<script type="application/json" id="aec-data"> { ... } </script>
+```
+portal/template.html   ← design fixo, placeholder __AEC_DATA__
+portal/data/*.json     ← uma edição por dia (dados + fotos em base64)
+scripts/build_portal.py → injeta a edição mais recente + índice do arquivo
+portal/index.html      ← saída final, publicada como Artifact
 ```
 
-Fluxo diário (executado pela skill / task agendada):
+A URL do portal é fixa: cada edição **republica o mesmo Artifact** (parâmetro
+`url` da ferramenta Artifact). Nunca publicar sem esse parâmetro — criaria um
+artifact novo e quebraria o link do leitor.
 
-1. Coletar as fontes (RSS + Google News RSS para sites sem feed)
-2. Curar as notícias e escrever resumos em pt-BR
-3. Substituir **apenas** o JSON do `#aec-data`:
-   - `meta` — data, revisão (`R01`, `R02`…), contagens de fontes/notícias
-   - `hero` — destaque do dia
-   - `sections[].items` — notícias por categoria (arq / eng / tec / bra)
-   - `editor_notes` — notas de projeto (tendências, conexões)
-   - `revisions` — **acrescentar** a linha da nova revisão (manter o histórico)
-4. Republicar o arquivo como Artifact **na mesma URL** (mesmo `file_path` na mesma
-   sessão, ou passando a URL do artifact como `url` em outra sessão)
+As fotos das matérias são embutidas como data URI (JPEG q62) porque o CSP dos
+Artifacts bloqueia qualquer host externo.
 
-O leitor guarda um único link; a página é sempre a edição mais recente, e o
-histórico de edições fica visível na tabela de revisões do carimbo.
+## Fluxo diário completo
 
-## Estrutura do JSON
-
-Ver o próprio `index.html` — o bloco `#aec-data` da edição `R00` serve de exemplo
-completo do schema.
+Documentado no `SKILL.md` da raiz. Automação: Routine diária às 8h (BRT) que
+abre uma sessão nova, gera a edição, republica o Artifact e commita
+`portal/data/AAAA-MM-DD.json` + `portal/index.html`.
