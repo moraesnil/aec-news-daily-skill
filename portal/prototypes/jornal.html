@@ -1,0 +1,452 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AEC NEWS Jornal</title>
+<style>
+  :root {
+    --paper: #FBF0E4;
+    --paper-2: #F4E6D5;
+    --ink: #33302E;
+    --ink-soft: #6B6259;
+    --rule: #DECDB7;
+    --rule-dark: #33302E;
+    --claret: #990F3D;
+    --teal: #0D7680;
+    --c-arq: #0D7680;
+    --c-eng: #990F3D;
+    --c-tec: #C4570F;
+    --c-bra: #4C6B1F;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #262019;
+      --paper-2: #2E2720;
+      --ink: #EFE5D8;
+      --ink-soft: #B2A697;
+      --rule: #4A4034;
+      --rule-dark: #EFE5D8;
+      --claret: #E0546F;
+      --teal: #5FB3BC;
+      --c-arq: #5FB3BC;
+      --c-eng: #E0546F;
+      --c-tec: #E89A55;
+      --c-bra: #9DBB6B;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #262019;
+    --paper-2: #2E2720;
+    --ink: #EFE5D8;
+    --ink-soft: #B2A697;
+    --rule: #4A4034;
+    --rule-dark: #EFE5D8;
+    --claret: #E0546F;
+    --teal: #5FB3BC;
+    --c-arq: #5FB3BC;
+    --c-eng: #E0546F;
+    --c-tec: #E89A55;
+    --c-bra: #9DBB6B;
+  }
+
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Georgia, "Iowan Old Style", "Times New Roman", serif;
+    line-height: 1.55;
+    padding: 0 22px 60px;
+  }
+  .sans { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+  .caps { text-transform: uppercase; letter-spacing: .16em; }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--claret); outline-offset: 3px; }
+  button { font-family: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+
+  /* ---------- Masthead ---------- */
+  .topline {
+    display: flex; justify-content: space-between; gap: 12px;
+    font-size: 10.5px; color: var(--ink-soft);
+    padding: 12px 0; border-bottom: 1px solid var(--rule);
+  }
+  .masthead { text-align: center; padding: 30px 0 18px; }
+  .masthead h1 {
+    font-size: clamp(3rem, 8.5vw, 5.8rem);
+    font-weight: 700; letter-spacing: .02em; line-height: 1;
+  }
+  .masthead h1 .accent { color: var(--claret); }
+  .masthead .tagline { font-size: 11px; color: var(--ink-soft); margin-top: 10px; }
+  .doubles { border-top: 3.5px double var(--rule-dark); border-bottom: 1px solid var(--rule-dark); height: 5px; }
+
+  /* ---------- Nav ---------- */
+  .nav { display: flex; justify-content: center; flex-wrap: wrap; border-bottom: 1px solid var(--rule); margin-bottom: 34px; }
+  .nav button {
+    padding: 12px 22px; font-size: 11px;
+    color: var(--ink-soft);
+    border-bottom: 3px solid transparent;
+  }
+  .nav button:hover { color: var(--ink); }
+  .nav button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--claret); }
+  .view[hidden] { display: none; }
+
+  /* ---------- Front page ---------- */
+  .front { display: grid; grid-template-columns: minmax(0, 7.2fr) minmax(0, 3.4fr); gap: 40px; }
+  .kicker { font-size: 11px; color: var(--claret); font-weight: 700; margin-bottom: 12px; }
+  .lead h2 {
+    font-size: clamp(1.9rem, 4.4vw, 3.1rem);
+    font-weight: 700; line-height: 1.06; letter-spacing: -0.012em;
+    text-wrap: balance; margin-bottom: 14px;
+  }
+  .lead .deck { font-style: italic; font-size: 1.15rem; color: var(--ink-soft); margin-bottom: 20px; max-width: 58ch; }
+  .lead figure { margin: 0 0 20px; }
+  .lead img { width: 100%; height: auto; display: block; }
+  .lead figcaption { font-size: 11px; color: var(--ink-soft); padding-top: 7px; border-bottom: 1px solid var(--rule); padding-bottom: 10px; }
+  .lead .body p { font-size: 1.02rem; margin-bottom: 14px; max-width: 62ch; }
+  .lead .body p:first-of-type::first-letter {
+    font-size: 3.3em; float: left; line-height: .82;
+    padding: 4px 10px 0 0; color: var(--claret); font-weight: 700;
+  }
+  .lead ul { list-style: none; padding: 0; margin: 18px 0; max-width: 62ch; }
+  .lead li { padding: 8px 0 8px 22px; border-top: 1px solid var(--rule); position: relative; font-size: .98rem; }
+  .lead li::before { content: "—"; position: absolute; left: 0; color: var(--claret); }
+  .byline { font-size: 11px; color: var(--ink-soft); }
+  .byline a { color: var(--teal); }
+
+  .rail { border-left: 1px solid var(--rule); padding-left: 28px; }
+  .rail-h { font-size: 11px; font-weight: 700; color: var(--ink); padding-bottom: 10px; border-bottom: 2.5px solid var(--rule-dark); margin-bottom: 4px; }
+  .brief { padding: 13px 0; border-bottom: 1px solid var(--rule); }
+  .brief .cat { font-size: 9.5px; font-weight: 700; color: var(--tag, var(--claret)); }
+  .brief h3 { font-size: 1.04rem; font-weight: 700; line-height: 1.25; margin: 4px 0 5px; }
+  .brief h3 a { text-decoration: none; }
+  .brief h3 a:hover { text-decoration: underline; text-decoration-color: var(--tag, var(--claret)); text-underline-offset: 3px; }
+  .brief .meta { font-size: 10.5px; color: var(--ink-soft); }
+
+  /* ---------- Section grids ---------- */
+  .sec-h { display: flex; align-items: center; gap: 18px; margin: 48px 0 22px; }
+  .sec-h::before, .sec-h::after { content: ""; flex: 1; border-top: 1px solid var(--rule-dark); }
+  .sec-h span { font-size: 11.5px; font-weight: 700; color: var(--tag, var(--ink)); }
+  .sec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr)); gap: 28px; }
+  .story .thumb { margin: 0 0 10px; }
+  .story .thumb img { width: 100%; height: auto; aspect-ratio: 3/2; object-fit: cover; display: block; }
+  .story .cat { font-size: 9.5px; font-weight: 700; color: var(--tag, var(--claret)); }
+  .story h3 { font-size: 1.12rem; line-height: 1.22; font-weight: 700; margin: 5px 0 7px; text-wrap: balance; }
+  .story h3 a { text-decoration: none; }
+  .story h3 a:hover { text-decoration: underline; text-decoration-color: var(--tag, var(--claret)); text-underline-offset: 3px; }
+  .story p { font-size: .92rem; color: var(--ink-soft); margin-bottom: 7px; }
+  .story .meta { font-size: 10px; color: var(--ink-soft); }
+
+  /* ---------- Editor notes ---------- */
+  .opinion { margin-top: 52px; border-top: 3.5px double var(--rule-dark); padding-top: 20px; }
+  .opinion .rail-h { border-bottom: 0; margin-bottom: 8px; }
+  .opinion p { font-size: 1.05rem; font-style: italic; max-width: 68ch; margin-bottom: 12px; }
+  .opinion p strong { color: var(--claret); font-style: normal; }
+
+  /* ---------- Análise (radar) ---------- */
+  .view-intro { font-style: italic; color: var(--ink-soft); font-size: 1.05rem; max-width: 62ch; margin-bottom: 34px; }
+  .an-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(330px, 100%), 1fr)); gap: 0 44px; }
+  .an { border-top: 2.5px solid var(--rule-dark); padding: 16px 0 30px; }
+  .an .num { font-size: 11px; font-weight: 700; color: var(--claret); }
+  .an .signal { font-style: italic; color: var(--ink-soft); font-size: .98rem; margin: 8px 0 12px; }
+  .an h3 { font-size: 11px; margin: 14px 0 4px; color: var(--ink); }
+  .an p { font-size: .97rem; }
+  .an .meta { margin-top: 14px; font-size: 10px; color: var(--ink-soft); }
+  .an .meta b { color: var(--claret); }
+
+  /* ---------- Caderno (studio) ---------- */
+  .seed { border-top: 3.5px double var(--rule-dark); padding: 18px 0 34px; }
+  .seed-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 18px; margin-bottom: 10px; }
+  .seed-head .platform { font-size: 11px; font-weight: 700; color: var(--claret); }
+  .seed-head .format { font-size: 10.5px; color: var(--ink-soft); }
+  .seed-copy { margin-left: auto; font-size: 10px; letter-spacing: .16em; text-transform: uppercase; border: 1px solid var(--rule-dark); padding: 6px 14px; }
+  .seed-copy:hover { background: var(--ink); color: var(--paper); }
+  .seed-copy.done { border-color: var(--c-bra); color: var(--c-bra); background: none; }
+  .seed-hook { font-size: 1.5rem; font-style: italic; font-weight: 700; line-height: 1.25; max-width: 50ch; margin-bottom: 14px; }
+  .seed-draft { white-space: pre-wrap; font-size: .97rem; max-width: 70ch; background: var(--paper-2); padding: 18px 22px; border-left: 3px solid var(--rule-dark); overflow-x: auto; }
+  .seed-tags { margin-top: 12px; font-size: 10.5px; color: var(--teal); }
+
+  /* ---------- Arquivo ---------- */
+  .arch { border-top: 2.5px solid var(--rule-dark); }
+  .arch table { width: 100%; border-collapse: collapse; }
+  .arch th { font-size: 9.5px; text-transform: uppercase; letter-spacing: .16em; color: var(--ink-soft); font-weight: 400; text-align: left; padding: 10px 14px 8px 0; border-bottom: 1px solid var(--rule); }
+  .arch td { padding: 10px 14px 10px 0; border-bottom: 1px solid var(--rule); font-size: .95rem; }
+  .arch tr.current td { font-weight: 700; }
+  .arch tr.current td:first-child::after { content: " · edição atual"; color: var(--claret); font-size: 10px; font-weight: 400; }
+  .arch-wrap { overflow-x: auto; }
+
+  /* ---------- Colophon ---------- */
+  .colophon {
+    margin-top: 60px; border-top: 3.5px double var(--rule-dark);
+    padding-top: 16px; text-align: center;
+    font-size: 10.5px; color: var(--ink-soft);
+  }
+  .colophon .row { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px 26px; margin-bottom: 6px; }
+
+  @media (max-width: 880px) {
+    .front { grid-template-columns: 1fr; }
+    .rail { border-left: 0; padding-left: 0; border-top: 2.5px solid var(--rule-dark); padding-top: 14px; }
+  }
+</style>
+
+<div class="wrap">
+  <div class="topline sans caps">
+    <span id="top-date"></span>
+    <span>Edição diária de Arquitetura, Engenharia &amp; Construção</span>
+    <span id="top-rev"></span>
+  </div>
+
+  <header class="masthead">
+    <h1>AEC<span class="accent">·</span>NEWS</h1>
+    <div class="tagline sans caps">Fundado em 2026 &middot; Curadoria por inteligência artificial &middot; Escala 1:dia</div>
+  </header>
+  <div class="doubles"></div>
+
+  <nav class="nav sans caps" role="tablist" aria-label="Seções" id="nav"></nav>
+
+  <section class="view" id="view-edicao" role="tabpanel" aria-label="Edição do dia">
+    <div class="front">
+      <article class="lead" id="lead"></article>
+      <aside class="rail">
+        <div class="rail-h sans caps">O Briefing</div>
+        <div id="briefs"></div>
+      </aside>
+    </div>
+    <div id="sections"></div>
+    <aside class="opinion" id="opinion">
+      <div class="rail-h sans caps">Notas do editor</div>
+      <div id="notes-body"></div>
+    </aside>
+  </section>
+
+  <section class="view" id="view-radar" role="tabpanel" aria-label="Análise estratégica" hidden>
+    <div class="sec-h"><span class="sans caps">Análise &amp; Estratégia</span></div>
+    <p class="view-intro" id="radar-intro"></p>
+    <div class="an-grid" id="radar-grid"></div>
+  </section>
+
+  <section class="view" id="view-conteudo" role="tabpanel" aria-label="Caderno de conteúdo" hidden>
+    <div class="sec-h"><span class="sans caps">Caderno de Conteúdo</span></div>
+    <p class="view-intro" id="studio-intro"></p>
+    <div id="studio-list"></div>
+  </section>
+
+  <section class="view" id="view-arquivo" role="tabpanel" aria-label="Arquivo" hidden>
+    <div class="sec-h"><span class="sans caps">Arquivo de Edições</span></div>
+    <div class="arch arch-wrap" id="arch-table"></div>
+  </section>
+
+  <footer class="colophon sans">
+    <div class="row caps" id="foot-stats"></div>
+    <div>AEC NEWS &mdash; gerado por IA a partir de fontes curadas &middot; aec-news-daily-skill</div>
+  </footer>
+</div>
+
+<noscript><p style="max-width:60ch;margin:20px auto;text-align:center">Este jornal renderiza via JavaScript. Habilite JS para ler a edição.</p></noscript>
+
+<script type="application/json" id="aec-data">__AEC_DATA__</script>
+
+<script>
+(function () {
+  var data = JSON.parse(document.getElementById('aec-data').textContent);
+  var CAT = { arq: '--c-arq', eng: '--c-eng', tec: '--c-tec', bra: '--c-bra' };
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  document.getElementById('top-date').textContent = data.meta.date_long;
+  document.getElementById('top-rev').textContent = 'Revisão ' + data.meta.revision;
+
+  /* ---------- Tabs ---------- */
+  var VIEWS = [
+    { id: 'edicao', name: 'Edição do dia' },
+    { id: 'radar', name: 'Análise' },
+    { id: 'conteudo', name: 'Caderno' },
+    { id: 'arquivo', name: 'Arquivo' }
+  ];
+  var nav = document.getElementById('nav');
+  VIEWS.forEach(function (v) {
+    var b = el('button', null, v.name);
+    b.type = 'button'; b.id = 'tab-' + v.id;
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', 'false');
+    b.setAttribute('aria-controls', 'view-' + v.id);
+    b.addEventListener('click', function () { show(v.id, true); });
+    nav.appendChild(b);
+  });
+  function show(id, push) {
+    VIEWS.forEach(function (v) {
+      document.getElementById('view-' + v.id).hidden = v.id !== id;
+      document.getElementById('tab-' + v.id).setAttribute('aria-selected', String(v.id === id));
+    });
+    if (push && history.replaceState) history.replaceState(null, '', '#' + id);
+  }
+  window.addEventListener('hashchange', function () {
+    var id = location.hash.slice(1);
+    if (VIEWS.some(function (v) { return v.id === id; })) show(id, false);
+  });
+  var initial = location.hash.slice(1);
+  show(VIEWS.some(function (v) { return v.id === initial; }) ? initial : 'edicao', false);
+
+  /* ---------- Lead ---------- */
+  var lead = document.getElementById('lead');
+  lead.appendChild(el('div', 'kicker sans caps', data.hero.kicker));
+  lead.appendChild(el('h2', null, data.hero.title));
+  lead.appendChild(el('p', 'deck', data.hero.paragraphs[0]));
+  if (data.hero.image) {
+    var fig = el('figure');
+    var img = document.createElement('img');
+    img.src = data.hero.image; img.alt = data.hero.title;
+    fig.appendChild(img);
+    fig.appendChild(el('figcaption', 'sans', 'Foto: via ' + data.hero.source));
+    lead.appendChild(fig);
+  }
+  var body = el('div', 'body');
+  data.hero.paragraphs.slice(1).forEach(function (p) { body.appendChild(el('p', null, p)); });
+  lead.appendChild(body);
+  var ul = el('ul');
+  data.hero.points.forEach(function (pt) { ul.appendChild(el('li', null, pt)); });
+  lead.appendChild(ul);
+  var by = el('div', 'byline sans caps');
+  by.appendChild(document.createTextNode('Fonte: '));
+  var a = el('a', null, data.hero.source);
+  a.href = data.hero.url; a.target = '_blank'; a.rel = 'noopener';
+  by.appendChild(a);
+  by.appendChild(document.createTextNode(' · ' + data.hero.date));
+  lead.appendChild(by);
+
+  /* ---------- Briefing rail: every story as headline ---------- */
+  var briefs = document.getElementById('briefs');
+  data.sections.forEach(function (sec) {
+    sec.items.forEach(function (item) {
+      var b = el('div', 'brief');
+      b.style.setProperty('--tag', 'var(' + CAT[sec.id] + ')');
+      b.appendChild(el('div', 'cat sans caps', sec.name));
+      var h = el('h3');
+      var ha = el('a', null, item.title);
+      ha.href = item.url; ha.target = '_blank'; ha.rel = 'noopener';
+      h.appendChild(ha);
+      b.appendChild(h);
+      b.appendChild(el('div', 'meta sans', item.source + ' · ' + item.date));
+      briefs.appendChild(b);
+    });
+  });
+
+  /* ---------- Section grids ---------- */
+  var main = document.getElementById('sections');
+  data.sections.forEach(function (sec) {
+    var catVar = 'var(' + CAT[sec.id] + ')';
+    var h = el('div', 'sec-h');
+    h.style.setProperty('--tag', catVar);
+    h.appendChild(el('span', 'sans caps', sec.name));
+    main.appendChild(h);
+    var grid = el('div', 'sec-grid');
+    sec.items.forEach(function (item) {
+      var s = el('article', 'story');
+      s.style.setProperty('--tag', catVar);
+      if (item.image) {
+        var fig = el('figure', 'thumb');
+        var img = document.createElement('img');
+        img.src = item.image; img.alt = item.title; img.loading = 'lazy';
+        fig.appendChild(img);
+        s.appendChild(fig);
+      }
+      s.appendChild(el('div', 'cat sans caps', item.source));
+      var hh = el('h3');
+      var ha = el('a', null, item.title);
+      ha.href = item.url; ha.target = '_blank'; ha.rel = 'noopener';
+      hh.appendChild(ha);
+      s.appendChild(hh);
+      s.appendChild(el('p', null, item.summary));
+      s.appendChild(el('div', 'meta sans caps', item.date));
+      grid.appendChild(s);
+    });
+    main.appendChild(grid);
+  });
+
+  /* ---------- Editor notes ---------- */
+  var nb = document.getElementById('notes-body');
+  (data.editor_notes || []).forEach(function (note) {
+    var p = document.createElement('p');
+    p.innerHTML = note;
+    nb.appendChild(p);
+  });
+
+  /* ---------- Análise (radar) ---------- */
+  var radar = data.radar || { intro: '', cards: [] };
+  document.getElementById('radar-intro').textContent = radar.intro;
+  var rg = document.getElementById('radar-grid');
+  radar.cards.forEach(function (c, i) {
+    var an = el('article', 'an');
+    an.appendChild(el('div', 'num sans caps', 'Análise Nº ' + (i + 1) + ' · Horizonte ' + c.horizon));
+    an.appendChild(el('p', 'signal', c.signal));
+    an.appendChild(el('h3', 'sans caps', 'A leitura'));
+    an.appendChild(el('p', null, c.reading));
+    an.appendChild(el('h3', 'sans caps', 'A jogada'));
+    an.appendChild(el('p', null, c.play));
+    var meta = el('div', 'meta sans caps');
+    meta.innerHTML = 'Impacto <b>' + '●'.repeat(c.impact) + '○'.repeat(3 - c.impact) +
+      '</b> &nbsp; Esforço <b>' + '●'.repeat(c.effort) + '○'.repeat(3 - c.effort) +
+      '</b> &nbsp; Ref: ' + (c.refs || []).join(', ');
+    an.appendChild(meta);
+    rg.appendChild(an);
+  });
+
+  /* ---------- Caderno (studio) ---------- */
+  var studio = data.studio || { intro: '', seeds: [] };
+  document.getElementById('studio-intro').textContent = studio.intro;
+  var sl = document.getElementById('studio-list');
+  studio.seeds.forEach(function (s) {
+    var seed = el('article', 'seed');
+    var head = el('div', 'seed-head');
+    head.appendChild(el('span', 'platform sans caps', s.platform));
+    head.appendChild(el('span', 'format sans', s.format));
+    var btn = el('button', 'seed-copy sans', 'Copiar texto');
+    btn.type = 'button';
+    btn.addEventListener('click', function () {
+      var full = s.hook + '\n\n' + s.draft + '\n\n' + (s.hashtags || []).join(' ');
+      function done() {
+        btn.textContent = 'Copiado ✓'; btn.classList.add('done');
+        setTimeout(function () { btn.textContent = 'Copiar texto'; btn.classList.remove('done'); }, 2000);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(full).then(done, done);
+      else done();
+    });
+    head.appendChild(btn);
+    seed.appendChild(head);
+    seed.appendChild(el('h3', 'seed-hook', s.hook));
+    seed.appendChild(el('div', 'seed-draft', s.draft));
+    seed.appendChild(el('div', 'seed-tags sans', (s.hashtags || []).join('  ')));
+    sl.appendChild(seed);
+  });
+
+  /* ---------- Arquivo ---------- */
+  var archive = data.archive || [{ date: data.meta.date, revision: data.meta.revision, stories: data.meta.story_count, headline: data.hero.title }];
+  var at = document.getElementById('arch-table');
+  var table = document.createElement('table');
+  var thead = document.createElement('thead');
+  var htr = document.createElement('tr');
+  ['Edição', 'Rev', 'Notícias', 'Manchete'].forEach(function (h) { htr.appendChild(el('th', 'sans', h)); });
+  thead.appendChild(htr); table.appendChild(thead);
+  var tbody = document.createElement('tbody');
+  archive.forEach(function (ed, i) {
+    var tr = document.createElement('tr');
+    if (i === 0) tr.className = 'current';
+    tr.appendChild(el('td', null, ed.date));
+    tr.appendChild(el('td', null, ed.revision));
+    tr.appendChild(el('td', null, String(ed.stories)));
+    tr.appendChild(el('td', null, ed.headline));
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody); at.appendChild(table);
+
+  /* ---------- Colophon ---------- */
+  var fs = document.getElementById('foot-stats');
+  [data.meta.date_long,
+   data.meta.story_count + ' notícias',
+   data.meta.sources_active + ' fontes ativas de ' + data.meta.sources_polled,
+   'Revisão ' + data.meta.revision
+  ].forEach(function (t) { fs.appendChild(el('span', null, t)); });
+})();
+</script>

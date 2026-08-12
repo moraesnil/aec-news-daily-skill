@@ -1,0 +1,484 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AEC NEWS Terminal</title>
+<style>
+  :root {
+    --bg: #FFFFFF;
+    --panel: #F4F5F7;
+    --ink: #0B0C0E;
+    --ink-soft: #5B6169;
+    --grid: #E2E4E8;
+    --bar: #0B0C0E;
+    --bar-ink: #FFFFFF;
+    --blue: #2429F0;
+    --orange: #FF5A1F;
+    --green: #0B8A47;
+    --c-arq: #2429F0;
+    --c-eng: #FF5A1F;
+    --c-tec: #7B2FF0;
+    --c-bra: #0B8A47;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0C0E11;
+      --panel: #14171C;
+      --ink: #E4E7EB;
+      --ink-soft: #8B93A1;
+      --grid: #262B33;
+      --bar: #E4E7EB;
+      --bar-ink: #0C0E11;
+      --blue: #7C86FF;
+      --orange: #FF7A45;
+      --green: #3ECF8E;
+      --c-arq: #7C86FF;
+      --c-eng: #FF7A45;
+      --c-tec: #B48CFF;
+      --c-bra: #3ECF8E;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0C0E11;
+    --panel: #14171C;
+    --ink: #E4E7EB;
+    --ink-soft: #8B93A1;
+    --grid: #262B33;
+    --bar: #E4E7EB;
+    --bar-ink: #0C0E11;
+    --blue: #7C86FF;
+    --orange: #FF7A45;
+    --green: #3ECF8E;
+    --c-arq: #7C86FF;
+    --c-eng: #FF7A45;
+    --c-tec: #B48CFF;
+    --c-bra: #3ECF8E;
+  }
+
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.45;
+    padding-bottom: 60px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+  .caps { text-transform: uppercase; letter-spacing: .12em; }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--orange); outline-offset: 2px; }
+  button { font-family: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  .wrap { max-width: 1220px; margin: 0 auto; padding: 0 22px; }
+
+  /* ---------- Top bar ---------- */
+  .topbar { background: var(--bar); color: var(--bar-ink); }
+  .topbar .wrap { display: flex; align-items: center; gap: 18px; padding: 14px 22px; flex-wrap: wrap; }
+  .logo { font-size: 22px; font-weight: 800; letter-spacing: -0.03em; }
+  .logo .sep { color: var(--orange); }
+  .top-meta { margin-left: auto; font-size: 11px; opacity: .85; display: flex; gap: 20px; flex-wrap: wrap; }
+
+  /* ---------- Ticker ---------- */
+  .ticker { border-bottom: 1px solid var(--grid); overflow: hidden; background: var(--panel); }
+  .ticker-track { display: inline-flex; gap: 44px; padding: 8px 0; white-space: nowrap; animation: tick 40s linear infinite; }
+  .ticker:hover .ticker-track { animation-play-state: paused; }
+  .ticker span { font-size: 10.5px; color: var(--ink-soft); }
+  .ticker .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 7px; }
+  .ticker .on { background: var(--green); }
+  .ticker .off { background: var(--orange); }
+  @keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) { .ticker-track { animation: none; } }
+
+  /* ---------- Function-key tabs ---------- */
+  .fkeys { display: flex; border-bottom: 2px solid var(--bar); overflow-x: auto; }
+  .fkeys button {
+    padding: 12px 20px; font-size: 11px; white-space: nowrap;
+    color: var(--ink-soft); border-right: 1px solid var(--grid);
+  }
+  .fkeys button .f { color: var(--orange); font-weight: 700; margin-right: 8px; }
+  .fkeys button:hover { background: var(--panel); color: var(--ink); }
+  .fkeys button[aria-selected="true"] { background: var(--bar); color: var(--bar-ink); }
+  .view[hidden] { display: none; }
+  .view { padding-top: 30px; }
+
+  /* ---------- Hero ---------- */
+  .hero { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 34px; align-items: start; margin-bottom: 40px; }
+  .kicker { font-size: 11px; color: var(--orange); font-weight: 700; margin-bottom: 12px; }
+  .hero h1 {
+    font-size: clamp(1.9rem, 4.6vw, 3.3rem);
+    font-weight: 800; line-height: 1.02; letter-spacing: -0.028em;
+    text-wrap: balance; margin-bottom: 16px;
+  }
+  .hero .deck { font-size: 1.05rem; color: var(--ink-soft); max-width: 58ch; margin-bottom: 18px; }
+  .datarows { border-top: 2px solid var(--bar); max-width: 60ch; }
+  .datarows .row { display: flex; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--grid); font-size: .92rem; }
+  .datarows .row .n { color: var(--blue); font-weight: 700; flex: none; }
+  .srcline { margin-top: 14px; font-size: 11px; color: var(--ink-soft); }
+  .srcline a { color: var(--blue); text-underline-offset: 3px; }
+  .hero-img { border-bottom: 4px solid var(--blue); }
+  .hero-img img { width: 100%; height: auto; display: block; }
+  .hero-img .cap { font-size: 10px; color: var(--ink-soft); padding: 8px 0; }
+
+  /* ---------- Section bars + dense rows ---------- */
+  .secbar {
+    background: var(--bar); color: var(--bar-ink);
+    display: flex; align-items: center; justify-content: space-between; gap: 14px;
+    padding: 9px 16px; margin: 34px 0 0; font-size: 11.5px; font-weight: 700;
+  }
+  .secbar .count { color: var(--orange); }
+  .rows { border: 1px solid var(--grid); border-top: 0; }
+  .nrow { display: flex; gap: 18px; padding: 16px; border-bottom: 1px solid var(--grid); align-items: flex-start; }
+  .nrow:last-child { border-bottom: 0; }
+  .nrow:hover { background: var(--panel); }
+  .nrow .idx { font-size: 13px; color: var(--cat, var(--blue)); font-weight: 700; flex: none; width: 34px; padding-top: 2px; }
+  .nrow .thumb { width: 128px; flex: none; }
+  .nrow .thumb img { width: 100%; aspect-ratio: 3/2; object-fit: cover; display: block; }
+  .nrow .txt { min-width: 0; flex: 1; }
+  .nrow h3 { font-size: 1.06rem; font-weight: 700; line-height: 1.25; letter-spacing: -0.01em; margin-bottom: 5px; }
+  .nrow h3 a { text-decoration: none; }
+  .nrow h3 a:hover { text-decoration: underline; text-decoration-color: var(--cat, var(--blue)); text-underline-offset: 3px; }
+  .nrow p { font-size: .9rem; color: var(--ink-soft); margin-bottom: 6px; }
+  .nrow .meta { font-size: 10px; color: var(--ink-soft); }
+  .nrow .meta .tag { color: var(--cat, var(--blue)); font-weight: 700; }
+
+  /* ---------- Notes ---------- */
+  .notes { margin-top: 40px; background: var(--panel); border-left: 4px solid var(--orange); padding: 22px 26px; }
+  .notes h2 { font-size: 11px; margin-bottom: 12px; color: var(--ink-soft); }
+  .notes p { max-width: 72ch; font-size: .98rem; margin-bottom: 10px; }
+  .notes p strong { color: var(--orange); }
+
+  /* ---------- Radar: terminal panels ---------- */
+  .view-intro { color: var(--ink-soft); font-size: .98rem; max-width: 66ch; margin-bottom: 26px; }
+  .panels { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(350px, 100%), 1fr)); gap: 18px; }
+  .panel { border: 1px solid var(--grid); background: var(--bg); display: flex; flex-direction: column; }
+  .panel-head { background: var(--bar); color: var(--bar-ink); padding: 8px 14px; display: flex; justify-content: space-between; gap: 10px; font-size: 10.5px; }
+  .panel-head .hz { color: var(--orange); font-weight: 700; }
+  .panel-body { padding: 16px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .p-signal { font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .03em; line-height: 1.55; }
+  .p-block .k { font-size: 9.5px; color: var(--blue); font-weight: 700; margin-bottom: 4px; }
+  .p-block p { font-size: .92rem; }
+  .bars { margin-top: auto; display: grid; gap: 8px; padding-top: 8px; }
+  .bar-row { display: grid; grid-template-columns: 64px 1fr 22px; align-items: center; gap: 10px; font-size: 9px; color: var(--ink-soft); }
+  .bar-track { height: 6px; background: var(--panel); border: 1px solid var(--grid); position: relative; }
+  .bar-fill { position: absolute; inset: 0; right: auto; background: var(--blue); }
+  .bar-fill.eff { background: var(--orange); }
+  .p-refs { font-size: 9.5px; color: var(--ink-soft); }
+
+  /* ---------- Studio ---------- */
+  .seed { border: 1px solid var(--grid); margin-bottom: 20px; }
+  .seed-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--grid); }
+  .seed-platform { background: var(--blue); color: #fff; font-size: 10px; font-weight: 700; padding: 4px 10px; letter-spacing: .1em; text-transform: uppercase; }
+  :root[data-theme="dark"] .seed-platform, :root:not([data-theme="light"]) .seed-platform { color: #0C0E11; }
+  @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .seed-platform { color: #fff; } }
+  .seed-format { font-size: 10.5px; color: var(--ink-soft); }
+  .seed-copy { margin-left: auto; background: var(--bar); color: var(--bar-ink); padding: 7px 16px; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+  .seed-copy:hover { background: var(--blue); }
+  .seed-copy.done { background: var(--green); }
+  .seed-body { padding: 18px; }
+  .seed-hook { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.015em; line-height: 1.25; margin-bottom: 12px; max-width: 54ch; }
+  .seed-draft { white-space: pre-wrap; font-size: .92rem; background: var(--panel); border: 1px solid var(--grid); padding: 14px 16px; max-width: 74ch; overflow-x: auto; }
+  .seed-tags { margin-top: 10px; font-size: 10.5px; color: var(--blue); }
+
+  /* ---------- Arquivo ---------- */
+  .arch { border: 1px solid var(--grid); overflow-x: auto; }
+  .arch table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  .arch th { background: var(--panel); font-size: 9.5px; text-transform: uppercase; letter-spacing: .12em; color: var(--ink-soft); font-weight: 700; text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--grid); }
+  .arch td { padding: 9px 14px; border-bottom: 1px solid var(--grid); }
+  .arch tr:last-child td { border-bottom: 0; }
+  .arch tr.current td { font-weight: 700; }
+  .arch tr.current td:first-child { color: var(--orange); }
+
+  /* ---------- Footer ---------- */
+  .foot { margin-top: 50px; border-top: 2px solid var(--bar); padding-top: 14px; display: flex; flex-wrap: wrap; gap: 8px 28px; justify-content: space-between; font-size: 10px; color: var(--ink-soft); }
+
+  @media (max-width: 860px) {
+    .hero { grid-template-columns: 1fr; }
+    .nrow .thumb { width: 92px; }
+  }
+</style>
+
+<div class="topbar">
+  <div class="wrap">
+    <span class="logo">AEC<span class="sep">/</span>NEWS</span>
+    <div class="top-meta mono caps"><span id="top-date"></span><span id="top-rev"></span></div>
+  </div>
+</div>
+<div class="ticker mono"><div class="ticker-track" id="ticker"></div></div>
+
+<div class="wrap">
+  <nav class="fkeys mono caps" role="tablist" aria-label="Painéis" id="nav"></nav>
+
+  <section class="view" id="view-edicao" role="tabpanel" aria-label="Edição">
+    <div class="hero">
+      <div>
+        <div class="kicker mono caps" id="hero-kicker"></div>
+        <h1 id="hero-title"></h1>
+        <p class="deck" id="hero-deck"></p>
+        <div class="datarows" id="hero-points"></div>
+        <div class="srcline mono caps" id="hero-src"></div>
+      </div>
+      <figure class="hero-img" id="hero-fig" style="margin:0"></figure>
+    </div>
+    <div id="sections"></div>
+    <aside class="notes">
+      <h2 class="mono caps">Notas do editor</h2>
+      <div id="notes-body"></div>
+    </aside>
+  </section>
+
+  <section class="view" id="view-radar" role="tabpanel" aria-label="Radar" hidden>
+    <p class="view-intro" id="radar-intro"></p>
+    <div class="panels" id="radar-grid"></div>
+  </section>
+
+  <section class="view" id="view-conteudo" role="tabpanel" aria-label="Conteúdo" hidden>
+    <p class="view-intro" id="studio-intro"></p>
+    <div id="studio-list"></div>
+  </section>
+
+  <section class="view" id="view-arquivo" role="tabpanel" aria-label="Arquivo" hidden>
+    <div class="arch" id="arch-table"></div>
+  </section>
+
+  <footer class="foot mono caps">
+    <span id="foot-l"></span>
+    <span>AEC/NEWS · gerado por IA · aec-news-daily-skill</span>
+  </footer>
+</div>
+
+<noscript><p style="max-width:60ch;margin:20px auto;font-family:monospace">Este painel renderiza via JavaScript. Habilite JS.</p></noscript>
+
+<script type="application/json" id="aec-data">__AEC_DATA__</script>
+
+<script>
+(function () {
+  var data = JSON.parse(document.getElementById('aec-data').textContent);
+  var CAT = { arq: '--c-arq', eng: '--c-eng', tec: '--c-tec', bra: '--c-bra' };
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  document.getElementById('top-date').textContent = data.meta.date_long;
+  document.getElementById('top-rev').textContent = 'REV ' + data.meta.revision;
+  document.getElementById('foot-l').textContent = data.meta.story_count + ' notícias · ' +
+    data.meta.sources_active + '/' + data.meta.sources_polled + ' fontes ativas · ' + data.meta.date;
+
+  /* ---------- Ticker (duplicated for seamless loop) ---------- */
+  var tick = document.getElementById('ticker');
+  var srcNames = [];
+  data.sections.forEach(function (s) { s.items.forEach(function (it) {
+    if (srcNames.indexOf(it.source) < 0) srcNames.push(it.source);
+  }); });
+  function tickerBatch() {
+    var frag = document.createDocumentFragment();
+    var s0 = el('span'); s0.appendChild(el('i', 'dot on')); s0.appendChild(document.createTextNode('FONTES ' + data.meta.sources_active + '/' + data.meta.sources_polled + ' ATIVAS'));
+    frag.appendChild(s0);
+    srcNames.forEach(function (n) {
+      var sp = el('span'); sp.appendChild(el('i', 'dot on')); sp.appendChild(document.createTextNode(n.toUpperCase()));
+      frag.appendChild(sp);
+    });
+    var s1 = el('span'); s1.appendChild(el('i', 'dot off')); s1.appendChild(document.createTextNode("THE ARCHITECT'S NEWSPAPER — BLOQUEADA"));
+    frag.appendChild(s1);
+    var s2 = el('span'); s2.appendChild(el('i', 'dot off')); s2.appendChild(document.createTextNode('REVISTA PROJETO — BLOQUEADA'));
+    frag.appendChild(s2);
+    return frag;
+  }
+  tick.appendChild(tickerBatch());
+  tick.appendChild(tickerBatch());
+
+  /* ---------- Tabs ---------- */
+  var VIEWS = [
+    { id: 'edicao', f: 'F1', name: 'Edição' },
+    { id: 'radar', f: 'F2', name: 'Radar' },
+    { id: 'conteudo', f: 'F3', name: 'Conteúdo' },
+    { id: 'arquivo', f: 'F4', name: 'Arquivo' }
+  ];
+  var nav = document.getElementById('nav');
+  VIEWS.forEach(function (v) {
+    var b = el('button');
+    b.type = 'button'; b.id = 'tab-' + v.id;
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', 'false');
+    b.setAttribute('aria-controls', 'view-' + v.id);
+    b.appendChild(el('span', 'f', v.f));
+    b.appendChild(document.createTextNode(v.name));
+    b.addEventListener('click', function () { show(v.id, true); });
+    nav.appendChild(b);
+  });
+  function show(id, push) {
+    VIEWS.forEach(function (v) {
+      document.getElementById('view-' + v.id).hidden = v.id !== id;
+      document.getElementById('tab-' + v.id).setAttribute('aria-selected', String(v.id === id));
+    });
+    if (push && history.replaceState) history.replaceState(null, '', '#' + id);
+  }
+  window.addEventListener('hashchange', function () {
+    var id = location.hash.slice(1);
+    if (VIEWS.some(function (v) { return v.id === id; })) show(id, false);
+  });
+  var initial = location.hash.slice(1);
+  show(VIEWS.some(function (v) { return v.id === initial; }) ? initial : 'edicao', false);
+
+  /* ---------- Hero ---------- */
+  document.getElementById('hero-kicker').textContent = data.hero.kicker;
+  document.getElementById('hero-title').textContent = data.hero.title;
+  document.getElementById('hero-deck').textContent = data.hero.paragraphs.join(' ');
+  var hp = document.getElementById('hero-points');
+  data.hero.points.forEach(function (pt, i) {
+    var row = el('div', 'row');
+    row.appendChild(el('span', 'n mono', String(i + 1).padStart(2, '0')));
+    row.appendChild(el('span', null, pt));
+    hp.appendChild(row);
+  });
+  var hs = document.getElementById('hero-src');
+  hs.appendChild(document.createTextNode('FONTE: '));
+  var ha = el('a', null, data.hero.source);
+  ha.href = data.hero.url; ha.target = '_blank'; ha.rel = 'noopener';
+  hs.appendChild(ha);
+  hs.appendChild(document.createTextNode(' · ' + data.hero.date));
+  var hf = document.getElementById('hero-fig');
+  if (data.hero.image) {
+    var img = document.createElement('img');
+    img.src = data.hero.image; img.alt = data.hero.title;
+    hf.appendChild(img);
+    hf.appendChild(el('div', 'cap mono caps', 'Foto via ' + data.hero.source));
+  } else { hf.style.display = 'none'; }
+
+  /* ---------- Sections as dense numbered rows ---------- */
+  var main = document.getElementById('sections');
+  var counter = 0;
+  data.sections.forEach(function (sec) {
+    var catVar = 'var(' + CAT[sec.id] + ')';
+    var bar = el('div', 'secbar mono caps');
+    bar.appendChild(el('span', null, sec.name + ' ///'));
+    bar.appendChild(el('span', 'count', String(sec.items.length).padStart(2, '0')));
+    main.appendChild(bar);
+    var rows = el('div', 'rows');
+    sec.items.forEach(function (item) {
+      counter++;
+      var r = el('article', 'nrow');
+      r.style.setProperty('--cat', catVar);
+      r.appendChild(el('span', 'idx mono', String(counter).padStart(2, '0')));
+      if (item.image) {
+        var th = el('div', 'thumb');
+        var img = document.createElement('img');
+        img.src = item.image; img.alt = item.title; img.loading = 'lazy';
+        th.appendChild(img);
+        r.appendChild(th);
+      }
+      var txt = el('div', 'txt');
+      var h = el('h3');
+      var a = el('a', null, item.title);
+      a.href = item.url; a.target = '_blank'; a.rel = 'noopener';
+      h.appendChild(a);
+      txt.appendChild(h);
+      txt.appendChild(el('p', null, item.summary));
+      var meta = el('div', 'meta mono caps');
+      meta.appendChild(el('span', 'tag', sec.code));
+      meta.appendChild(document.createTextNode(' · ' + item.source + ' · ' + item.date));
+      txt.appendChild(meta);
+      r.appendChild(txt);
+      rows.appendChild(r);
+    });
+    main.appendChild(rows);
+  });
+
+  /* ---------- Notes ---------- */
+  var nb = document.getElementById('notes-body');
+  (data.editor_notes || []).forEach(function (note) {
+    var p = document.createElement('p');
+    p.innerHTML = note;
+    nb.appendChild(p);
+  });
+
+  /* ---------- Radar panels ---------- */
+  var radar = data.radar || { intro: '', cards: [] };
+  document.getElementById('radar-intro').textContent = radar.intro;
+  var rg = document.getElementById('radar-grid');
+  radar.cards.forEach(function (c, i) {
+    var p = el('article', 'panel');
+    var head = el('div', 'panel-head mono caps');
+    head.appendChild(el('span', null, 'SINAL ' + String(i + 1).padStart(2, '0')));
+    head.appendChild(el('span', 'hz', c.horizon));
+    p.appendChild(head);
+    var body = el('div', 'panel-body');
+    body.appendChild(el('div', 'p-signal mono', c.signal));
+    var b1 = el('div', 'p-block');
+    b1.appendChild(el('div', 'k mono caps', 'Leitura'));
+    b1.appendChild(el('p', null, c.reading));
+    body.appendChild(b1);
+    var b2 = el('div', 'p-block');
+    b2.appendChild(el('div', 'k mono caps', 'Jogada'));
+    b2.appendChild(el('p', null, c.play));
+    body.appendChild(b2);
+    var bars = el('div', 'bars');
+    [['Impacto', c.impact, ''], ['Esforço', c.effort, 'eff']].forEach(function (m) {
+      var row = el('div', 'bar-row mono caps');
+      row.appendChild(el('span', null, m[0]));
+      var track = el('div', 'bar-track');
+      var fill = el('div', 'bar-fill ' + m[2]);
+      fill.style.width = (m[1] / 3 * 100) + '%';
+      track.appendChild(fill);
+      row.appendChild(track);
+      row.appendChild(el('span', null, m[1] + '/3'));
+      bars.appendChild(row);
+    });
+    body.appendChild(bars);
+    body.appendChild(el('div', 'p-refs mono caps', 'REF: ' + (c.refs || []).join(' · ')));
+    p.appendChild(body);
+    rg.appendChild(p);
+  });
+
+  /* ---------- Studio ---------- */
+  var studio = data.studio || { intro: '', seeds: [] };
+  document.getElementById('studio-intro').textContent = studio.intro;
+  var sl = document.getElementById('studio-list');
+  studio.seeds.forEach(function (s) {
+    var seed = el('article', 'seed');
+    var head = el('div', 'seed-head');
+    head.appendChild(el('span', 'seed-platform', s.platform));
+    head.appendChild(el('span', 'seed-format mono caps', s.format));
+    var btn = el('button', 'seed-copy mono', 'Copiar');
+    btn.type = 'button';
+    btn.addEventListener('click', function () {
+      var full = s.hook + '\n\n' + s.draft + '\n\n' + (s.hashtags || []).join(' ');
+      function done() {
+        btn.textContent = 'Copiado ✓'; btn.classList.add('done');
+        setTimeout(function () { btn.textContent = 'Copiar'; btn.classList.remove('done'); }, 2000);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(full).then(done, done);
+      else done();
+    });
+    head.appendChild(btn);
+    seed.appendChild(head);
+    var body = el('div', 'seed-body');
+    body.appendChild(el('h3', 'seed-hook', s.hook));
+    body.appendChild(el('div', 'seed-draft', s.draft));
+    body.appendChild(el('div', 'seed-tags mono', (s.hashtags || []).join('  ')));
+    seed.appendChild(body);
+    sl.appendChild(seed);
+  });
+
+  /* ---------- Arquivo ---------- */
+  var archive = data.archive || [{ date: data.meta.date, revision: data.meta.revision, stories: data.meta.story_count, headline: data.hero.title }];
+  var at = document.getElementById('arch-table');
+  var table = document.createElement('table');
+  var thead = document.createElement('thead');
+  var htr = document.createElement('tr');
+  ['Edição', 'Rev', 'Notícias', 'Manchete'].forEach(function (h) { htr.appendChild(el('th', 'mono', h)); });
+  thead.appendChild(htr); table.appendChild(thead);
+  var tbody = document.createElement('tbody');
+  archive.forEach(function (ed, i) {
+    var tr = document.createElement('tr');
+    if (i === 0) tr.className = 'current';
+    tr.appendChild(el('td', 'mono', ed.date));
+    tr.appendChild(el('td', 'mono', ed.revision));
+    tr.appendChild(el('td', 'mono', String(ed.stories)));
+    tr.appendChild(el('td', null, ed.headline));
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody); at.appendChild(table);
+})();
+</script>
