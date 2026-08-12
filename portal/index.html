@@ -1,0 +1,596 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AEC NEWS</title>
+<style>
+  :root {
+    --paper: #F4F2EB;
+    --paper-2: #EDEAE0;
+    --ink: #131C26;
+    --ink-soft: #4A5560;
+    --line: #C4C8BD;
+    --line-strong: #131C26;
+    --c-arq: #1D4F91;
+    --c-eng: #E84E0F;
+    --c-tec: #0F8A8A;
+    --c-bra: #1E7A46;
+    --accent: #E84E0F;
+    --hatch: rgba(19, 28, 38, 0.10);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0C2340;
+      --paper-2: #0F2B4D;
+      --ink: #E9F1F9;
+      --ink-soft: #9FB4C9;
+      --line: #2B4A70;
+      --line-strong: #E9F1F9;
+      --c-arq: #85B4E8;
+      --c-eng: #FF6A2B;
+      --c-tec: #3FC1C1;
+      --c-bra: #4FC98B;
+      --accent: #FF6A2B;
+      --hatch: rgba(233, 241, 249, 0.10);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0C2340;
+    --paper-2: #0F2B4D;
+    --ink: #E9F1F9;
+    --ink-soft: #9FB4C9;
+    --line: #2B4A70;
+    --line-strong: #E9F1F9;
+    --c-arq: #85B4E8;
+    --c-eng: #FF6A2B;
+    --c-tec: #3FC1C1;
+    --c-bra: #4FC98B;
+    --accent: #FF6A2B;
+    --hatch: rgba(233, 241, 249, 0.10);
+  }
+
+  * { box-sizing: border-box; margin: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.5;
+    padding: 34px 26px 40px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono {
+    font-family: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible {
+    outline: 2px dashed var(--accent);
+    outline-offset: 3px;
+  }
+
+  /* ---------- Sheet frame + coordinates ---------- */
+  .sheet {
+    position: relative;
+    max-width: 1140px;
+    margin: 0 auto;
+    border: 1.5px solid var(--line-strong);
+    padding: clamp(20px, 4vw, 44px);
+    background: var(--paper);
+  }
+  .coords { position: absolute; display: flex; pointer-events: none; color: var(--ink-soft); font-size: 9px; letter-spacing: .12em; }
+  .coords-x { top: -20px; left: 0; right: 0; justify-content: space-around; }
+  .coords-y { top: 0; bottom: 0; left: -18px; flex-direction: column; justify-content: space-around; }
+  .cropmark { position: absolute; width: 14px; height: 14px; pointer-events: none; }
+  .cropmark::before, .cropmark::after { content: ""; position: absolute; background: var(--ink-soft); }
+  .cropmark::before { width: 14px; height: 1px; }
+  .cropmark::after { width: 1px; height: 14px; }
+  .cm-tl { top: -20px; left: -20px; } .cm-tl::before { bottom: 0; right: 0; } .cm-tl::after { bottom: 0; right: 0; }
+  .cm-tr { top: -20px; right: -20px; } .cm-tr::before { bottom: 0; left: 0; } .cm-tr::after { bottom: 0; left: 0; }
+  .cm-bl { bottom: -20px; left: -20px; } .cm-bl::before { top: 0; right: 0; } .cm-bl::after { top: 0; right: 0; }
+  .cm-br { bottom: -20px; right: -20px; } .cm-br::before { top: 0; left: 0; } .cm-br::after { top: 0; left: 0; }
+
+  /* ---------- Masthead ---------- */
+  .masthead {
+    display: flex; flex-wrap: wrap; gap: 20px 32px;
+    align-items: flex-end; justify-content: space-between;
+    padding-bottom: 22px;
+  }
+  .eyebrow { font-size: 10px; letter-spacing: .22em; color: var(--ink-soft); text-transform: uppercase; margin-bottom: 10px; }
+  .wordmark {
+    font-size: clamp(3rem, 9vw, 6.4rem);
+    font-weight: 900;
+    letter-spacing: -0.035em;
+    line-height: .88;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .wordmark .alt { color: var(--accent); }
+  @supports (-webkit-text-stroke: 2px red) {
+    .wordmark .alt { color: transparent; -webkit-text-stroke: 2.5px var(--ink); }
+  }
+  .tblock {
+    border: 1px solid var(--line-strong);
+    display: grid; grid-template-columns: auto auto;
+    font-size: 11px; min-width: 210px;
+  }
+  .tblock > div { padding: 5px 12px; border-bottom: 1px solid var(--line); }
+  .tblock > div:nth-last-child(-n+2) { border-bottom: 0; }
+  .tblock .k { color: var(--ink-soft); letter-spacing: .14em; font-size: 9px; text-transform: uppercase; border-right: 1px solid var(--line); display: flex; align-items: center; }
+
+  /* ---------- Legend (filters) ---------- */
+  .legend {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
+    border-top: 1.5px solid var(--line-strong);
+    border-bottom: 1px solid var(--line);
+    padding: 10px 0;
+    margin-bottom: 34px;
+  }
+  .legend .cap { font-size: 9px; letter-spacing: .22em; color: var(--ink-soft); margin-right: 6px; }
+  .lg-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: none; border: 1px solid transparent; border-radius: 0;
+    padding: 4px 8px; cursor: pointer; color: var(--ink);
+    font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase;
+    font-family: inherit;
+  }
+  .lg-btn .sw { width: 11px; height: 11px; background: var(--cat, var(--ink)); display: inline-block; }
+  .lg-btn[aria-pressed="true"] { border-color: var(--line-strong); }
+  .lg-btn:hover { border-color: var(--line); }
+  .lg-count { color: var(--ink-soft); }
+
+  /* ---------- Dimension-line section headers ---------- */
+  .dim { display: flex; align-items: center; margin: 46px 0 20px; }
+  .dim .ln { flex: 1; height: 1px; background: var(--line-strong); transform-origin: left; }
+  .dim .tick { width: 13px; height: 1.5px; background: var(--line-strong); transform: rotate(-45deg); flex: none; }
+  .dim .lbl {
+    padding: 0 16px; font-size: 11px; letter-spacing: .24em; text-transform: uppercase;
+    color: var(--ink); white-space: nowrap;
+  }
+  .dim .lbl .n { color: var(--cat, var(--accent)); }
+  @keyframes drawline { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+  .dim .ln { animation: drawline .7s ease-out both; }
+  .dim .ln:last-of-type { transform-origin: right; }
+
+  /* ---------- Detail markers ---------- */
+  .marker {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1.5px solid var(--cat, var(--ink));
+    color: var(--cat, var(--ink));
+    display: grid; grid-template-rows: 1fr 1fr; place-items: center;
+    font-size: 9.5px; line-height: 1; flex: none;
+    position: relative;
+  }
+  .marker::before { content: ""; position: absolute; left: 4px; right: 4px; top: 50%; height: 1px; background: currentColor; }
+  .marker span { display: block; padding: 2px 0; }
+
+  /* ---------- Hero (Destaque) ---------- */
+  .hero { display: flex; gap: 22px; align-items: flex-start; }
+  .hero-body { flex: 1; min-width: 0; }
+  .hero .kicker { font-size: 10px; letter-spacing: .26em; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; }
+  .hero h1 {
+    font-size: clamp(1.6rem, 4vw, 2.5rem);
+    font-weight: 800; letter-spacing: -0.02em; line-height: 1.08;
+    text-wrap: balance; margin-bottom: 16px; max-width: 21ch;
+  }
+  .hero p { max-width: 62ch; color: var(--ink); margin-bottom: 12px; font-size: 15.5px; }
+  .hero ul { list-style: none; margin: 18px 0; padding: 0; max-width: 62ch; }
+  .hero li { display: flex; gap: 12px; padding: 7px 0; border-top: 1px solid var(--line); font-size: 14px; }
+  .hero li::before { content: ""; width: 8px; height: 8px; background: var(--accent); flex: none; margin-top: 5px; }
+  .srcline { font-size: 11px; color: var(--ink-soft); }
+  .srcline a { color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+  .srcline a:hover { color: var(--accent); }
+
+  /* ---------- Card grid (drawing schedule) ---------- */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+    gap: 1px; background: var(--line); border: 1px solid var(--line);
+  }
+  .card { background: var(--paper); padding: 20px 20px 18px; display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  @supports (background: color-mix(in srgb, red 5%, white)) {
+    .card:hover { background: color-mix(in srgb, var(--cat) 7%, var(--paper)); }
+  }
+  .card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .card-meta { font-size: 10px; color: var(--ink-soft); letter-spacing: .08em; text-transform: uppercase; text-align: right; }
+  .card h3 { font-size: 16.5px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.22; text-wrap: balance; }
+  .card h3 a { text-decoration: none; }
+  .card h3 a:hover { text-decoration: underline; text-decoration-color: var(--cat, var(--accent)); text-underline-offset: 3px; }
+  .card p { font-size: 13.5px; color: var(--ink-soft); flex: 1; }
+  .card .go { font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--cat, var(--ink)); text-decoration: none; }
+  .card .go:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+  /* ---------- Editor notes (poché hatch) ---------- */
+  .notes {
+    margin-top: 54px;
+    background: repeating-linear-gradient(45deg, var(--hatch) 0 1px, transparent 1px 7px);
+    padding: 14px;
+    border: 1px solid var(--line-strong);
+  }
+  .notes-inner { background: var(--paper); border: 1px solid var(--line); padding: 24px 26px; }
+  .notes h2 { font-size: 11px; letter-spacing: .26em; text-transform: uppercase; margin-bottom: 14px; color: var(--ink); }
+  .notes p { max-width: 72ch; font-size: 14px; color: var(--ink); margin-bottom: 10px; }
+  .notes p strong { color: var(--accent); }
+
+  /* ---------- Carimbo (title block footer) ---------- */
+  .carimbo { margin-top: 54px; border: 1.5px solid var(--line-strong); }
+  .carimbo-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 1px; background: var(--line); }
+  .carimbo-cell { background: var(--paper); padding: 10px 14px; min-width: 0; }
+  .carimbo-cell .k { font-size: 8.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 3px; }
+  .carimbo-cell .v { font-size: 12.5px; font-weight: 600; overflow-wrap: break-word; }
+  .revs { border-top: 1px solid var(--line-strong); overflow-x: auto; }
+  .revs table { width: 100%; border-collapse: collapse; font-size: 11px; }
+  .revs th, .revs td { text-align: left; padding: 7px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .revs th { font-size: 8.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); font-weight: 400; }
+  .revs td.desc { white-space: normal; }
+  .revs tr:last-child td { border-bottom: 0; }
+  .colophon { padding: 10px 14px; font-size: 10px; color: var(--ink-soft); border-top: 1px solid var(--line-strong); display: flex; flex-wrap: wrap; gap: 6px 18px; justify-content: space-between; }
+
+  @media (max-width: 720px) {
+    body { padding: 26px 18px; }
+    .coords-y { display: none; }
+    .hero { flex-direction: column; }
+    .carimbo-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dim .ln { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+
+<div class="sheet">
+  <div class="coords coords-x mono" aria-hidden="true"><span>1</span><span>2</span><span>3</span><span>4</span></div>
+  <div class="coords coords-y mono" aria-hidden="true"><span>A</span><span>B</span><span>C</span></div>
+  <i class="cropmark cm-tl" aria-hidden="true"></i><i class="cropmark cm-tr" aria-hidden="true"></i>
+  <i class="cropmark cm-bl" aria-hidden="true"></i><i class="cropmark cm-br" aria-hidden="true"></i>
+
+  <header class="masthead">
+    <div>
+      <div class="eyebrow mono">Boletim diário &middot; Arquitetura / Engenharia / Construção</div>
+      <div class="wordmark">AEC&nbsp;<span class="alt">NEWS</span></div>
+    </div>
+    <div class="tblock mono" id="tblock"></div>
+  </header>
+
+  <nav class="legend mono" id="legend" aria-label="Filtrar por categoria">
+    <span class="cap">LEGENDA / FILTRO</span>
+  </nav>
+
+  <section class="hero" id="hero" aria-label="Destaque do dia"></section>
+
+  <main id="sections"></main>
+
+  <aside class="notes" id="notes">
+    <div class="notes-inner">
+      <h2 class="mono">Notas de projeto</h2>
+      <div id="notes-body"></div>
+    </div>
+  </aside>
+
+  <footer class="carimbo" id="carimbo">
+    <div class="carimbo-grid" id="carimbo-grid"></div>
+    <div class="revs mono">
+      <table>
+        <thead><tr><th>Rev</th><th>Data</th><th>Descrição</th></tr></thead>
+        <tbody id="revs-body"></tbody>
+      </table>
+    </div>
+    <div class="colophon mono">
+      <span>AEC NEWS &mdash; boletim gerado por IA a partir de fontes curadas</span>
+      <span>aec-news-daily-skill &middot; escala 1:DIA</span>
+    </div>
+  </footer>
+</div>
+
+<noscript><p style="max-width:60ch;margin:20px auto;font-family:monospace">Este portal renderiza o boletim via JavaScript. Habilite JS para ver a edição do dia.</p></noscript>
+
+<script type="application/json" id="aec-data">
+{
+  "meta": {
+    "sheet": "A-01",
+    "revision": "R00",
+    "date": "12.08.2026",
+    "date_long": "Quarta-feira, 12 de agosto de 2026",
+    "scale": "1:DIA",
+    "sources_polled": 9,
+    "sources_active": 6,
+    "story_count": 15
+  },
+  "hero": {
+    "marker": ["D", "01"],
+    "kicker": "Destaque do dia",
+    "title": "Nova York é o primeiro estado dos EUA a pausar novos data centers por um ano",
+    "paragraphs": [
+      "O estado de Nova York suspendeu por 12 meses a aprovação de novos data centers hyperscale, tornando-se o primeiro dos EUA a impor uma moratória ao setor — a justificativa é a pressão crescente dessas instalações sobre as redes de energia e os recursos hídricos.",
+      "A decisão chega no momento em que a infraestrutura digital virou o principal motor da construção pesada global: a WSP reportou que energia já responde por até 40% de sua receita, e a AECOM fechou o trimestre com backlog recorde puxado justamente pelo pipeline de data centers. O recado é duplo — nunca houve tanto capital no setor, e nunca houve tanto risco regulatório."
+    ],
+    "points": [
+      "Primeira moratória estadual dos EUA sobre data centers hyperscale, válida por 12 meses",
+      "Motivação: consumo de energia e água das instalações em escala crescente",
+      "Contraponto do mercado: WSP (até 40% da receita em energia) e AECOM (backlog recorde) seguem apostando pesado no segmento"
+    ],
+    "source": "Global Construction Review",
+    "date": "05.08",
+    "url": "https://www.globalconstructionreview.com/new-york-state-pauses-all-new-data-centres-for-a-year/"
+  },
+  "sections": [
+    {
+      "id": "arq",
+      "code": "ARQ",
+      "name": "Arquitetura",
+      "items": [
+        {
+          "title": "Além da estética do feito à mão: o artesanal precisa de novas economias da construção",
+          "source": "ArchDaily Brasil", "date": "12.08",
+          "url": "https://www.archdaily.com.br/pt/1183110/alem-da-estetica-do-feito-a-mao-por-que-o-fazer-artesanal-precisa-de-novas-economias-da-construcao",
+          "summary": "Ensaio questiona a celebração do tijolo artesanal, da cal e da taipa como símbolos de autenticidade sem que existam cadeias produtivas que sustentem esses ofícios. Sem economia viável, o 'craft' vira imagem — não prática."
+        },
+        {
+          "title": "OYO Architects empilha escritório em aço sobre galpão portuário em Ostend",
+          "source": "Dezeen", "date": "12.08",
+          "url": "https://www.dezeen.com/2026/08/12/oyo-architects-elia-group-ostend-office-warehouse/",
+          "summary": "Centro de operações da empresa de energia Elia, na Bélgica, sobrepõe usos: logística embaixo, escritórios em estrutura metálica em cima. O volume evoca as plataformas offshore da própria companhia."
+        },
+        {
+          "title": "Heatherwick Studio revisa parque Belvedere sobre viaduto em Louisville",
+          "source": "Dezeen", "date": "11.08",
+          "url": "https://www.dezeen.com/2026/08/11/heatherwick-studio-belvedere-louisville-waterfront-update/",
+          "summary": "Projeto reconecta o centro de Louisville ao rio Ohio, com parte do parque construída sobre um viaduto rodoviário dos anos 1970. Caso emblemático de infraestrutura reciclada como espaço público."
+        },
+        {
+          "title": "Villa Österlen / Note Design Studio",
+          "source": "ArchDaily Brasil", "date": "12.08",
+          "url": "https://www.archdaily.com.br/pt/1183161/villa-osterlen-note-design-studio",
+          "summary": "Segunda obra construída do estúdio sueco ocupa terreno inclinado entre pomares no sul da Suécia. Implantação discreta na paisagem, com foco em conforto e privacidade para uma família."
+        }
+      ]
+    },
+    {
+      "id": "eng",
+      "code": "ENG",
+      "name": "Engenharia & Construção",
+      "items": [
+        {
+          "title": "JV com Clark e Mortenson vai construir estádio de US$ 3,8 bi do Washington Commanders",
+          "source": "Construction Dive", "date": "11.08",
+          "url": "https://www.constructiondive.com/news/commanders-jv-nfl-stadium-clark-mortenson-smoot/827593/",
+          "summary": "O consórcio ergue a arena de 65 mil lugares em Washington, D.C. — mais um megaprojeto do atual ciclo de estádios da NFL, entre os maiores contratos esportivos em andamento nos EUA."
+        },
+        {
+          "title": "FAA destina US$ 870 milhões a obras de infraestrutura aeroportuária",
+          "source": "Construction Dive", "date": "11.08",
+          "url": "https://www.constructiondive.com/news/faa-airport-infrastructure-projects/827581/",
+          "summary": "São 339 subvenções para aeroportos em 44 estados, dentro do pacote de infraestrutura de US$ 1,2 trilhão (IIJA). O ciclo de obras públicas americano segue irrigado."
+        },
+        {
+          "title": "Megaprojeto portuário polonês vai licitar US$ 10,7 bilhões ainda em 2026",
+          "source": "Global Construction Review", "date": "10.08",
+          "url": "https://www.globalconstructionreview.com/contracts-worth-10-7bn-to-be-awarded-this-year-for-polish-megaproject/",
+          "summary": "O programa Port Polska já assinou 29 contratos e prevê outros 58 até o fim do ano — um dos maiores pacotes de infraestrutura em curso na Europa."
+        },
+        {
+          "title": "AECOM tem prejuízo no trimestre, mas backlog recorde puxado por data centers",
+          "source": "Construction Dive", "date": "11.08",
+          "url": "https://www.constructiondive.com/news/aecom-data-center-pipeline-fiscal-q3-earnings/827603/",
+          "summary": "Baixa contábil de US$ 337 milhões derrubou o resultado fiscal do 3º trimestre, mas a carteira é a maior da história da empresa. O recado ao mercado: o pipeline importa mais que o tropeço."
+        }
+      ]
+    },
+    {
+      "id": "tec",
+      "code": "TEC",
+      "name": "BIM & Tecnologia",
+      "items": [
+        {
+          "title": "Construtora alemã imprime a própria sede em 3D e abre divisão de impressão",
+          "source": "Global Construction Review", "date": "07.08",
+          "url": "https://www.globalconstructionreview.com/germanys-matthai-prints-headquarters-and-opens-new-division/",
+          "summary": "A Matthäi concluiu um edifício de 364 m² em dois pavimentos com uma impressora COBOD BOD2 — e transformou a experiência em unidade de negócio. Impressão 3D saindo do piloto para o portfólio."
+        },
+        {
+          "title": "Schindler adapta hospital suíço para operação de 30 robôs autônomos",
+          "source": "Global Construction Review", "date": "07.08",
+          "url": "https://www.globalconstructionreview.com/schindler-retrofits-hospital-for-robots/",
+          "summary": "Retrofit permite que AGVs transportem roupa, comida, equipamentos e resíduos pelo edifício. Adaptar prédios existentes para robôs desponta como um mercado novo escondido no estoque construído."
+        },
+        {
+          "title": "Protótipo transforma espaço público em bateria urbana no Canadá",
+          "source": "ArchDaily Brasil", "date": "12.08",
+          "url": "https://www.archdaily.com.br/pt/1183153/prototipo-de-bateria-arquitetonica-transforma-espaco-publico-em-armazenamento-urbano-de-energia-em-ontario-canada",
+          "summary": "Em Ontário, mobiliário urbano vira armazenamento de energia, tratando a praça como infraestrutura elétrica. A arquitetura assumindo papel ativo na transição energética."
+        }
+      ]
+    },
+    {
+      "id": "bra",
+      "code": "BRA",
+      "name": "Nacional · Brasil",
+      "items": [
+        {
+          "title": "CBIC aprova quarta redução seguida da Selic, mas cobra continuidade dos cortes",
+          "source": "CBIC", "date": "05.08",
+          "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxQejF2ckFrRVUtRnJTQmRjV3dnRGRaY3l3OUR3Zk5yU180eTBWSDg1SERrY1F2VGJGbG40WFlnOVV1UkRXcGg4ZTRMbDdDV3hwYVVuYWxiZnRwWVpCalBGWFo3VVc4bk1wUDIzY2o3TWl2REhPX3Q1cVM2bTg5UUt3N3RKVmtuNG80bWtYdDhHOUlCaTA4eklFUEdIZ2VURGFIckNIRGhWUnFCb3lzQW9UZTJJZmZGT2w0cmc?oc=5",
+          "summary": "Para a entidade, o ciclo de queda dos juros é a variável-chave para destravar crédito imobiliário e financiamento da produção em 2026. A construção volta a olhar para lançamentos."
+        },
+        {
+          "title": "Gestão de riscos ocupacionais nos canteiros reúne especialistas na CBIC",
+          "source": "CBIC", "date": "10.08",
+          "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxNcTc0X2xzRnlCMHhpakxLc1o1dC1xSjNkYjNxY2pIR3p0MFpDVGxUS3M5Mm1CUjJjR0ZOTlFOcEdCS1RzMUhVczVxUlQ5VWVRWm1IeTB0MUs2X2V6V0RmVFk1dTZjWTQ4aTlrVjBJRDdMaFlUbi10c1p1U255RzV4ZnBQOGg0UmptUjBuZ1dOUExqdS0xTlJWTEZuVVlkbDhwVzhDTE81Zm9wdXhFZURrOGo0VG9lQ1NyMVpPQ0I5bkdaZzJyV3p6UkJn?oc=5",
+          "summary": "Evento reforça a agenda de prevenção diante da atualização das NRs. Segurança do trabalho segue como a pauta regulatória mais quente do setor no país."
+        },
+        {
+          "title": "Fórum Construindo Cidades Resilientes abre inscrições em São Paulo",
+          "source": "CBIC", "date": "31.07",
+          "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNY21YYnJkdjRwTzVLZ2xLdHVaOXpfQUhwNUdWUHhYM1B0MmQ5d1FHUHdlQWtyWHFsMHlScnVEZkFwNEU3VHpsMXh5YjJHMXU2N1E5X3ZxT1hlYVBxZDZ0bDN1TW9IbFBoSWJaVnlxc0VCckJYT3lnaEg0YVBVRXpoU2JsQk1fdFA5MlBaM2djcHhwODg3aTV0cnhIdEt0UQ?oc=5",
+          "summary": "Adaptação climática urbana entra de vez na agenda da indústria da construção brasileira. O fórum discute resiliência de cidades diante de eventos extremos."
+        }
+      ]
+    }
+  ],
+  "editor_notes": [
+    "<strong>Energia é o novo terreno.</strong> A moratória de Nova York, a receita da WSP concentrada em power, o backlog da AECOM puxado por data centers e até um protótipo de praça-bateria em Ontário contam a mesma história por ângulos diferentes: a fronteira da construção deixou de ser o edifício e passou a ser a infraestrutura energética que o alimenta — com o risco regulatório crescendo na mesma proporção.",
+    "<strong>No Brasil, o jogo é macro.</strong> Com a Selic em queda pela quarta vez seguida, o setor volta a mirar crédito e lançamentos — enquanto a agenda técnica (segurança nos canteiros, resiliência urbana) prepara o terreno para o próximo ciclo."
+  ],
+  "revisions": [
+    { "rev": "R00", "date": "12.08.2026", "desc": "Emissão inicial do portal — 15 notícias, 6 fontes ativas de 9 consultadas" }
+  ]
+}
+</script>
+
+<script>
+(function () {
+  var data = JSON.parse(document.getElementById('aec-data').textContent);
+  var CAT = { arq: '--c-arq', eng: '--c-eng', tec: '--c-tec', bra: '--c-bra' };
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  /* Title block */
+  var tb = document.getElementById('tblock');
+  [['Folha', data.meta.sheet], ['Revisão', data.meta.revision], ['Data', data.meta.date], ['Escala', data.meta.scale]]
+    .forEach(function (row) {
+      tb.appendChild(el('div', 'k', row[0]));
+      tb.appendChild(el('div', null, row[1]));
+    });
+
+  /* Hero */
+  var hero = document.getElementById('hero');
+  var hm = el('div', 'marker');
+  hm.style.setProperty('--cat', 'var(--accent)');
+  hm.appendChild(el('span', 'mono', data.hero.marker[0]));
+  hm.appendChild(el('span', 'mono', data.hero.marker[1]));
+  hero.appendChild(hm);
+  var hb = el('div', 'hero-body');
+  hb.appendChild(el('div', 'kicker mono', data.hero.kicker + ' · ' + data.meta.date_long));
+  hb.appendChild(el('h1', null, data.hero.title));
+  data.hero.paragraphs.forEach(function (p) { hb.appendChild(el('p', null, p)); });
+  var ul = el('ul');
+  data.hero.points.forEach(function (pt) { ul.appendChild(el('li', null, pt)); });
+  hb.appendChild(ul);
+  var src = el('div', 'srcline mono');
+  src.appendChild(document.createTextNode('FONTE: '));
+  var a = el('a', null, data.hero.source);
+  a.href = data.hero.url; a.target = '_blank'; a.rel = 'noopener';
+  src.appendChild(a);
+  src.appendChild(document.createTextNode(' · ' + data.hero.date));
+  hb.appendChild(src);
+  hero.appendChild(hb);
+
+  /* Sections */
+  var main = document.getElementById('sections');
+  data.sections.forEach(function (sec) {
+    var wrap = el('section');
+    wrap.dataset.cat = sec.id;
+    wrap.setAttribute('aria-label', sec.name);
+    var catVar = 'var(' + CAT[sec.id] + ')';
+
+    var dim = el('div', 'dim');
+    dim.style.setProperty('--cat', catVar);
+    dim.appendChild(el('i', 'tick'));
+    dim.appendChild(el('i', 'ln'));
+    var lbl = el('span', 'lbl mono');
+    lbl.appendChild(document.createTextNode(sec.name + ' · '));
+    var n = el('span', 'n', String(sec.items.length).padStart(2, '0'));
+    lbl.appendChild(n);
+    dim.appendChild(lbl);
+    dim.appendChild(el('i', 'ln'));
+    dim.appendChild(el('i', 'tick'));
+    wrap.appendChild(dim);
+
+    var grid = el('div', 'cards');
+    sec.items.forEach(function (item, i) {
+      var card = el('article', 'card');
+      card.style.setProperty('--cat', catVar);
+      var top = el('div', 'card-top');
+      var mk = el('div', 'marker');
+      mk.appendChild(el('span', 'mono', sec.code));
+      mk.appendChild(el('span', 'mono', String(i + 1).padStart(2, '0')));
+      top.appendChild(mk);
+      var meta = el('div', 'card-meta mono');
+      meta.appendChild(document.createTextNode(item.source));
+      meta.appendChild(el('br'));
+      meta.appendChild(document.createTextNode(item.date));
+      top.appendChild(meta);
+      card.appendChild(top);
+      var h = el('h3');
+      var ha = el('a', null, item.title);
+      ha.href = item.url; ha.target = '_blank'; ha.rel = 'noopener';
+      h.appendChild(ha);
+      card.appendChild(h);
+      card.appendChild(el('p', null, item.summary));
+      var go = el('a', 'go mono', 'Ler na fonte →');
+      go.href = item.url; go.target = '_blank'; go.rel = 'noopener';
+      card.appendChild(go);
+      grid.appendChild(card);
+    });
+    wrap.appendChild(grid);
+    main.appendChild(wrap);
+  });
+
+  /* Editor notes (trusted content authored by the generator) */
+  var nb = document.getElementById('notes-body');
+  data.editor_notes.forEach(function (note) {
+    var p = document.createElement('p');
+    p.innerHTML = note;
+    nb.appendChild(p);
+  });
+
+  /* Carimbo */
+  var cg = document.getElementById('carimbo-grid');
+  [
+    ['Projeto', 'Boletim diário AEC'],
+    ['Prancha', data.meta.sheet + ' · ' + data.meta.revision],
+    ['Data de emissão', data.meta.date],
+    ['Fontes', data.meta.sources_active + ' ativas / ' + data.meta.sources_polled + ' consultadas'],
+    ['Notícias', String(data.meta.story_count)],
+    ['Gerado por', 'AEC News Daily Skill']
+  ].forEach(function (c) {
+    var cell = el('div', 'carimbo-cell');
+    cell.appendChild(el('div', 'k mono', c[0]));
+    cell.appendChild(el('div', 'v', c[1]));
+    cg.appendChild(cell);
+  });
+  var rb = document.getElementById('revs-body');
+  data.revisions.forEach(function (r) {
+    var tr = document.createElement('tr');
+    tr.appendChild(el('td', null, r.rev));
+    tr.appendChild(el('td', null, r.date));
+    var td = el('td', 'desc', r.desc);
+    tr.appendChild(td);
+    rb.appendChild(tr);
+  });
+
+  /* Legend / filters */
+  var legend = document.getElementById('legend');
+  var active = 'all';
+  function makeBtn(id, name, count, catVar) {
+    var b = el('button', 'lg-btn mono');
+    b.type = 'button';
+    b.dataset.cat = id;
+    b.setAttribute('aria-pressed', id === 'all' ? 'true' : 'false');
+    if (catVar) {
+      b.style.setProperty('--cat', catVar);
+      b.appendChild(el('i', 'sw'));
+    }
+    b.appendChild(document.createTextNode(name));
+    if (count != null) b.appendChild(el('span', 'lg-count', ' ' + String(count).padStart(2, '0')));
+    b.addEventListener('click', function () { setFilter(id); });
+    return b;
+  }
+  legend.appendChild(makeBtn('all', 'Todas as camadas', null, null));
+  data.sections.forEach(function (sec) {
+    legend.appendChild(makeBtn(sec.id, sec.code + ' — ' + sec.name, sec.items.length, 'var(' + CAT[sec.id] + ')'));
+  });
+  function setFilter(id) {
+    active = id;
+    legend.querySelectorAll('.lg-btn').forEach(function (b) {
+      b.setAttribute('aria-pressed', String(b.dataset.cat === id));
+    });
+    main.querySelectorAll('section').forEach(function (s) {
+      s.style.display = (id === 'all' || s.dataset.cat === id) ? '' : 'none';
+    });
+  }
+})();
+</script>
