@@ -3,32 +3,20 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
 <style>
+/* Jornal impresso: tema claro fixo — papel-jornal em qualquer modo do leitor */
 :root{
-  --paper:#FFFFFF; --ivory:#FBFAF6; --ink:#121212; --muted:#5A5A52;
-  --hair:#DCDAD3; --hair-strong:#121212; --blue:#326891; --blue-soft:#EAF0F5;
+  --paper:#F7F4EC; --ivory:#EFEBDF; --ink:#161511; --muted:#5C574C;
+  --hair:#D8D3C5; --hair-strong:#161511; --blue:#326891; --blue-soft:#E7ECEA;
   --c-arq:#326891; --c-eng:#A81817; --c-obr:#A81817; --c-mer:#1A7343;
   --c-mat:#8A6D3B; --c-tec:#5B3A8E; --c-bra:#B45309;
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
   --serif:Georgia,'Iowan Old Style','Times New Roman',serif;
   --sans:'Libre Franklin',Helvetica,Arial,sans-serif;
   --black:'UnifrakturMaguntia',Georgia,serif;
 }
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:#121212; --ivory:#1A1A18; --ink:#E7E5E0; --muted:#9C9A92;
-    --hair:#33322E; --hair-strong:#E7E5E0; --blue:#7FA7C7; --blue-soft:#1C2530;
-    --c-arq:#7FA7C7; --c-eng:#E76B6B; --c-obr:#E76B6B; --c-mer:#57B583;
-    --c-mat:#C2A56B; --c-tec:#9C7BD1; --c-bra:#E28E3C;
-  }
-}
-:root[data-theme="dark"]{
-  --paper:#121212; --ivory:#1A1A18; --ink:#E7E5E0; --muted:#9C9A92;
-  --hair:#33322E; --hair-strong:#E7E5E0; --blue:#7FA7C7; --blue-soft:#1C2530;
-  --c-arq:#7FA7C7; --c-eng:#E76B6B; --c-obr:#E76B6B; --c-mer:#57B583;
-  --c-mat:#C2A56B; --c-tec:#9C7BD1; --c-bra:#E28E3C;
-}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--serif);
+body{margin:0;background:var(--paper) var(--grain);color:var(--ink);font-family:var(--serif);
   font-size:16px;line-height:1.55}
 a{color:inherit;text-decoration:none}
 a:hover .hl, a:hover h1, a:hover h3, .story a:hover{color:var(--blue)}
@@ -53,7 +41,7 @@ img{max-width:100%;display:block}
 .rule1{border-top:1px solid var(--hair-strong)}
 
 /* ---- navegação ---- */
-nav.views{position:sticky;top:0;z-index:40;background:var(--paper);
+nav.views{position:sticky;top:0;z-index:40;background:var(--paper) var(--grain);
   border-top:1px solid var(--hair-strong);border-bottom:1px solid var(--hair)}
 nav.views .wrap{display:flex;justify-content:center;gap:4px;flex-wrap:wrap}
 nav.views button{appearance:none;background:none;border:0;cursor:pointer;
@@ -721,7 +709,7 @@ footer b{color:var(--ink);font-weight:600}
 "use strict";
 const DATA = JSON.parse(document.getElementById("aec-data").textContent);
 const M = DATA.meta || {};
-const RSS_URL = "https://raw.githubusercontent.com/moraesnil/aec-news-daily-skill/claude/onde-paramos-ld5c9n/portal/feed.xml";
+const RSS_URL = "https://raw.githubusercontent.com/moraesnil/aec-news-daily-skill/main/portal/feed.xml";
 const CAT = {arq:"--c-arq",eng:"--c-eng",obr:"--c-obr",mer:"--c-mer",mat:"--c-mat",tec:"--c-tec",bra:"--c-bra"};
 const catVar = id => CAT[id] || "--c-arq";
 const edno = M.edition_number ? "Nº " + String(M.edition_number).padStart(3,"0") : "";
