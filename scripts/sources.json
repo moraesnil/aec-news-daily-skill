@@ -1,0 +1,19 @@
+{
+  "_como_adicionar": "Adicione um objeto à lista 'sources' com name (único) e url (feed RSS direto, ou Google News RSS no formato https://news.google.com/rss/search?q=SUA+BUSCA&hl=pt-BR&gl=BR&ceid=BR:pt-419 — use q=site:dominio.com.br para seguir um site sem feed). Commit no repo e a próxima edição já coleta.",
+  "sources": [
+    { "name": "ArchDaily Brasil", "url": "https://feeds.feedburner.com/ArchdailyBR", "type": "RSS direto", "lang": "PT", "nota": "" },
+    { "name": "Dezeen", "url": "https://www.dezeen.com/feed/", "type": "RSS direto", "lang": "EN", "nota": "" },
+    { "name": "The Architect's Newspaper", "url": "https://www.archpaper.com/feed/", "type": "RSS direto", "lang": "EN", "nota": "bloqueada por Cloudflare desde 12/08" },
+    { "name": "Archinect", "url": "https://archinect.com/feed/news", "type": "RSS direto", "lang": "EN", "nota": "" },
+    { "name": "Construction Dive", "url": "https://www.constructiondive.com/feeds/news/", "type": "RSS direto", "lang": "EN", "nota": "" },
+    { "name": "Global Construction Review", "url": "https://www.globalconstructionreview.com/feed/", "type": "RSS direto", "lang": "EN", "nota": "" },
+    { "name": "Revista PROJETO", "url": "https://revistaprojeto.com.br/feed/", "type": "RSS direto", "lang": "PT", "nota": "bloqueada por Cloudflare desde 12/08" },
+    { "name": "CBIC (GNews)", "url": "https://news.google.com/rss/search?q=site:cbic.org.br&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "" },
+    { "name": "AECweb (GNews)", "url": "https://news.google.com/rss/search?q=site:aecweb.com.br&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "" },
+    { "name": "CAUBR (GNews)", "url": "https://news.google.com/rss/search?q=site:caubr.gov.br&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "" },
+    { "name": "Construção Civil BR (GNews)", "url": "https://news.google.com/rss/search?q=%22constru%C3%A7%C3%A3o%20civil%22%20when:2d&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "busca temática, últimas 48h" },
+    { "name": "Mercado Imobiliário (GNews)", "url": "https://news.google.com/rss/search?q=%22mercado%20imobili%C3%A1rio%22%20when:2d&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "busca temática, últimas 48h" },
+    { "name": "Infraestrutura BR (GNews)", "url": "https://news.google.com/rss/search?q=infraestrutura%20obras%20when:2d&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "busca temática, últimas 48h" },
+    { "name": "Sinduscon-SP (GNews)", "url": "https://news.google.com/rss/search?q=site:sindusconsp.com.br%20OR%20sinduscon&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "" }
+  ]
+}

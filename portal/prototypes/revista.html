@@ -1,0 +1,377 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AEC NEWS Revista</title>
+<style>
+  :root {
+    --bg: #FFFFFF;
+    --bg-2: #F7F7F5;
+    --ink: #141414;
+    --ink-soft: #757570;
+    --hair: #E9E9E6;
+    --accent: #C4472B;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #121212;
+      --bg-2: #1B1B1A;
+      --ink: #EDEDEA;
+      --ink-soft: #9A9A94;
+      --hair: #2C2C2A;
+      --accent: #E5674A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #121212;
+    --bg-2: #1B1B1A;
+    --ink: #EDEDEA;
+    --ink-soft: #9A9A94;
+    --hair: #2C2C2A;
+    --accent: #E5674A;
+  }
+
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    padding: 0 clamp(20px, 5vw, 60px) 90px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .caps { text-transform: uppercase; letter-spacing: .22em; }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 1.5px solid var(--accent); outline-offset: 4px; }
+  button { font-family: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
+  .wrap { max-width: 1280px; margin: 0 auto; }
+
+  /* ---------- Header ---------- */
+  .top {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    padding: 26px 0; border-bottom: 1px solid var(--hair); margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .logo { font-size: 15px; font-weight: 700; letter-spacing: .34em; }
+  .logo em { font-style: normal; color: var(--accent); }
+  .nav { display: flex; gap: 4px; flex-wrap: wrap; }
+  .nav button { padding: 8px 14px; font-size: 10px; color: var(--ink-soft); }
+  .nav button:hover { color: var(--ink); }
+  .nav button[aria-selected="true"] { color: var(--ink); border-bottom: 1.5px solid var(--ink); }
+  .dateline { text-align: center; font-size: 10px; color: var(--ink-soft); padding: 22px 0 46px; }
+  .view[hidden] { display: none; }
+
+  /* ---------- Hero ---------- */
+  .hero { margin-bottom: 90px; }
+  .hero-img { overflow: hidden; margin-bottom: 34px; }
+  .hero-img img { width: 100%; height: auto; display: block; }
+  .hero-txt { max-width: 880px; margin: 0 auto; text-align: center; }
+  .kicker { font-size: 10px; color: var(--accent); margin-bottom: 18px; }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.6rem);
+    font-weight: 300; line-height: 1.12; letter-spacing: -0.022em;
+    text-wrap: balance; margin-bottom: 22px;
+  }
+  .hero .deck { font-size: 1.12rem; color: var(--ink-soft); font-weight: 300; margin-bottom: 26px; }
+  .hero ul { list-style: none; padding: 0; margin: 0 auto 26px; max-width: 620px; text-align: left; }
+  .hero li { padding: 12px 0; border-top: 1px solid var(--hair); font-size: .96rem; font-weight: 300; }
+  .hero li::before { content: "→  "; color: var(--accent); }
+  .srcline { font-size: 10px; color: var(--ink-soft); }
+  .srcline a { color: var(--ink); text-underline-offset: 4px; }
+  .srcline a:hover { color: var(--accent); }
+
+  /* ---------- Section label ---------- */
+  .seclabel { text-align: center; margin: 96px 0 44px; }
+  .seclabel .n { display: block; font-size: 11px; color: var(--accent); margin-bottom: 8px; }
+  .seclabel .t { font-size: 12px; font-weight: 700; }
+
+  /* ---------- Photo grid ---------- */
+  .pgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr)); gap: 56px 40px; }
+  .pcard { display: flex; flex-direction: column; gap: 14px; }
+  .pcard .ph { overflow: hidden; background: var(--bg-2); }
+  .pcard .ph img { width: 100%; aspect-ratio: 3/2; object-fit: cover; display: block; transition: transform .6s ease, opacity .3s ease; }
+  .pcard:hover .ph img { transform: scale(1.03); }
+  .pcard .ph-empty { aspect-ratio: 3/2; display: grid; place-items: center; font-size: 10px; color: var(--ink-soft); letter-spacing: .22em; }
+  .pcard .meta { font-size: 9.5px; color: var(--ink-soft); }
+  .pcard .meta em { font-style: normal; color: var(--accent); }
+  .pcard h3 { font-size: 1.28rem; font-weight: 400; line-height: 1.28; letter-spacing: -0.012em; text-wrap: balance; }
+  .pcard h3 a { text-decoration: none; }
+  .pcard h3 a:hover { color: var(--accent); }
+  .pcard p { font-size: .92rem; color: var(--ink-soft); font-weight: 300; }
+
+  /* ---------- Notes ---------- */
+  .notes { max-width: 720px; margin: 110px auto 0; text-align: center; }
+  .notes h2 { font-size: 11px; color: var(--accent); margin-bottom: 24px; }
+  .notes p { font-size: 1.22rem; font-weight: 300; line-height: 1.55; margin-bottom: 18px; }
+  .notes p strong { font-weight: 700; }
+
+  /* ---------- Radar: editorial list ---------- */
+  .view-intro { max-width: 640px; margin: 0 auto 70px; text-align: center; font-size: 1.05rem; font-weight: 300; color: var(--ink-soft); }
+  .rlist { max-width: 880px; margin: 0 auto; }
+  .ritem { display: grid; grid-template-columns: 110px 1fr; gap: 30px; padding: 46px 0; border-top: 1px solid var(--hair); }
+  .ritem .big { font-size: 3.4rem; font-weight: 200; line-height: 1; color: var(--ink); }
+  .ritem .hz { display: block; font-size: 9.5px; color: var(--accent); margin-top: 10px; }
+  .ritem .signal { font-size: .9rem; color: var(--ink-soft); margin-bottom: 14px; }
+  .ritem h3 { font-size: 1.35rem; font-weight: 400; line-height: 1.3; margin-bottom: 12px; letter-spacing: -0.012em; }
+  .ritem p { font-size: .98rem; font-weight: 300; margin-bottom: 12px; }
+  .ritem .play { border-left: 2px solid var(--accent); padding-left: 18px; }
+  .ritem .play b { display: block; font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); margin-bottom: 6px; font-weight: 700; }
+  .ritem .fine { font-size: 9.5px; color: var(--ink-soft); }
+
+  /* ---------- Studio ---------- */
+  .seed { max-width: 760px; margin: 0 auto 60px; border: 1px solid var(--hair); padding: 40px clamp(22px, 5vw, 48px); }
+  .seed-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px 20px; margin-bottom: 22px; }
+  .seed-platform { font-size: 10px; color: var(--accent); font-weight: 700; }
+  .seed-format { font-size: 10px; color: var(--ink-soft); }
+  .seed-copy { margin-left: auto; font-size: 9.5px; letter-spacing: .22em; text-transform: uppercase; border-bottom: 1.5px solid var(--ink); padding-bottom: 3px; }
+  .seed-copy:hover { color: var(--accent); border-color: var(--accent); }
+  .seed-copy.done { color: var(--accent); border-color: var(--accent); }
+  .seed-hook { font-size: 1.55rem; font-weight: 300; line-height: 1.3; letter-spacing: -0.015em; margin-bottom: 20px; }
+  .seed-draft { white-space: pre-wrap; font-size: .95rem; font-weight: 300; color: var(--ink); background: var(--bg-2); padding: 24px 26px; overflow-x: auto; }
+  .seed-tags { margin-top: 16px; font-size: 10px; color: var(--ink-soft); }
+
+  /* ---------- Arquivo ---------- */
+  .arch { max-width: 880px; margin: 0 auto; }
+  .aitem { display: flex; flex-wrap: wrap; gap: 8px 26px; align-items: baseline; padding: 22px 0; border-top: 1px solid var(--hair); }
+  .aitem .d { font-size: .95rem; font-weight: 700; }
+  .aitem .r { font-size: 10px; color: var(--ink-soft); letter-spacing: .18em; }
+  .aitem .h { flex: 1 1 100%; font-size: 1.05rem; font-weight: 300; color: var(--ink-soft); }
+  .aitem.current .d { color: var(--accent); }
+
+  /* ---------- Footer ---------- */
+  .foot { margin-top: 120px; border-top: 1px solid var(--hair); padding-top: 26px; text-align: center; font-size: 9.5px; color: var(--ink-soft); }
+  .foot .row { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 30px; margin-bottom: 10px; }
+
+  @media (max-width: 640px) {
+    .ritem { grid-template-columns: 1fr; gap: 12px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pcard .ph img { transition: none; }
+  }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="logo caps">AEC<em>&middot;</em>NEWS</div>
+    <nav class="nav caps" role="tablist" aria-label="Seções" id="nav"></nav>
+  </header>
+  <div class="dateline caps" id="dateline"></div>
+
+  <section class="view" id="view-edicao" role="tabpanel" aria-label="Edição">
+    <article class="hero">
+      <div class="hero-img" id="hero-img"></div>
+      <div class="hero-txt">
+        <div class="kicker caps" id="hero-kicker"></div>
+        <h1 id="hero-title"></h1>
+        <p class="deck" id="hero-deck"></p>
+        <ul id="hero-points"></ul>
+        <div class="srcline caps" id="hero-src"></div>
+      </div>
+    </article>
+    <div id="sections"></div>
+    <aside class="notes">
+      <h2 class="caps">Notas do editor</h2>
+      <div id="notes-body"></div>
+    </aside>
+  </section>
+
+  <section class="view" id="view-radar" role="tabpanel" aria-label="Radar" hidden>
+    <div class="seclabel"><span class="n caps">Estratégia</span><span class="t caps">O Radar</span></div>
+    <p class="view-intro" id="radar-intro"></p>
+    <div class="rlist" id="radar-grid"></div>
+  </section>
+
+  <section class="view" id="view-conteudo" role="tabpanel" aria-label="Conteúdo" hidden>
+    <div class="seclabel"><span class="n caps">Estúdio</span><span class="t caps">Conteúdo</span></div>
+    <p class="view-intro" id="studio-intro"></p>
+    <div id="studio-list"></div>
+  </section>
+
+  <section class="view" id="view-arquivo" role="tabpanel" aria-label="Arquivo" hidden>
+    <div class="seclabel"><span class="n caps">Histórico</span><span class="t caps">Arquivo</span></div>
+    <div class="arch" id="arch-table"></div>
+  </section>
+
+  <footer class="foot caps">
+    <div class="row" id="foot-stats"></div>
+    <div>AEC&middot;NEWS &mdash; gerado por IA a partir de fontes curadas</div>
+  </footer>
+</div>
+
+<noscript><p style="max-width:60ch;margin:20px auto;text-align:center">Esta revista renderiza via JavaScript. Habilite JS.</p></noscript>
+
+<script type="application/json" id="aec-data">__AEC_DATA__</script>
+
+<script>
+(function () {
+  var data = JSON.parse(document.getElementById('aec-data').textContent);
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  document.getElementById('dateline').textContent =
+    data.meta.date_long + ' — edição ' + data.meta.revision + ' — ' + data.meta.story_count + ' histórias';
+
+  /* ---------- Tabs ---------- */
+  var VIEWS = [
+    { id: 'edicao', name: 'Edição' },
+    { id: 'radar', name: 'Radar' },
+    { id: 'conteudo', name: 'Conteúdo' },
+    { id: 'arquivo', name: 'Arquivo' }
+  ];
+  var nav = document.getElementById('nav');
+  VIEWS.forEach(function (v) {
+    var b = el('button', null, v.name);
+    b.type = 'button'; b.id = 'tab-' + v.id;
+    b.setAttribute('role', 'tab');
+    b.setAttribute('aria-selected', 'false');
+    b.setAttribute('aria-controls', 'view-' + v.id);
+    b.addEventListener('click', function () { show(v.id, true); });
+    nav.appendChild(b);
+  });
+  function show(id, push) {
+    VIEWS.forEach(function (v) {
+      document.getElementById('view-' + v.id).hidden = v.id !== id;
+      document.getElementById('tab-' + v.id).setAttribute('aria-selected', String(v.id === id));
+    });
+    if (push && history.replaceState) history.replaceState(null, '', '#' + id);
+  }
+  window.addEventListener('hashchange', function () {
+    var id = location.hash.slice(1);
+    if (VIEWS.some(function (v) { return v.id === id; })) show(id, false);
+  });
+  var initial = location.hash.slice(1);
+  show(VIEWS.some(function (v) { return v.id === initial; }) ? initial : 'edicao', false);
+
+  /* ---------- Hero ---------- */
+  if (data.hero.image) {
+    var img = document.createElement('img');
+    img.src = data.hero.image; img.alt = data.hero.title;
+    document.getElementById('hero-img').appendChild(img);
+  }
+  document.getElementById('hero-kicker').textContent = data.hero.kicker;
+  document.getElementById('hero-title').textContent = data.hero.title;
+  document.getElementById('hero-deck').textContent = data.hero.paragraphs[0];
+  var hp = document.getElementById('hero-points');
+  data.hero.points.forEach(function (pt) { hp.appendChild(el('li', null, pt)); });
+  var hs = document.getElementById('hero-src');
+  hs.appendChild(document.createTextNode('Fonte: '));
+  var ha = el('a', null, data.hero.source);
+  ha.href = data.hero.url; ha.target = '_blank'; ha.rel = 'noopener';
+  hs.appendChild(ha);
+  hs.appendChild(document.createTextNode(' — ' + data.hero.date));
+
+  /* ---------- Sections as photo grids ---------- */
+  var main = document.getElementById('sections');
+  data.sections.forEach(function (sec, si) {
+    var lab = el('div', 'seclabel');
+    lab.appendChild(el('span', 'n caps', 'Seção ' + String(si + 1).padStart(2, '0')));
+    lab.appendChild(el('span', 't caps', sec.name));
+    main.appendChild(lab);
+    var grid = el('div', 'pgrid');
+    sec.items.forEach(function (item) {
+      var c = el('article', 'pcard');
+      var ph = el('div', 'ph');
+      if (item.image) {
+        var img = document.createElement('img');
+        img.src = item.image; img.alt = item.title; img.loading = 'lazy';
+        ph.appendChild(img);
+      } else {
+        ph.appendChild(el('div', 'ph-empty caps', sec.code));
+      }
+      c.appendChild(ph);
+      var meta = el('div', 'meta caps');
+      var em = el('em', null, item.source);
+      meta.appendChild(em);
+      meta.appendChild(document.createTextNode(' — ' + item.date));
+      c.appendChild(meta);
+      var h = el('h3');
+      var a = el('a', null, item.title);
+      a.href = item.url; a.target = '_blank'; a.rel = 'noopener';
+      h.appendChild(a);
+      c.appendChild(h);
+      c.appendChild(el('p', null, item.summary));
+      grid.appendChild(c);
+    });
+    main.appendChild(grid);
+  });
+
+  /* ---------- Notes ---------- */
+  var nb = document.getElementById('notes-body');
+  (data.editor_notes || []).forEach(function (note) {
+    var p = document.createElement('p');
+    p.innerHTML = note;
+    nb.appendChild(p);
+  });
+
+  /* ---------- Radar editorial list ---------- */
+  var radar = data.radar || { intro: '', cards: [] };
+  document.getElementById('radar-intro').textContent = radar.intro;
+  var rg = document.getElementById('radar-grid');
+  radar.cards.forEach(function (c, i) {
+    var it = el('article', 'ritem');
+    var left = el('div');
+    left.appendChild(el('span', 'big', String(i + 1).padStart(2, '0')));
+    left.appendChild(el('span', 'hz caps', c.horizon + ' · impacto ' + c.impact + '/3 · esforço ' + c.effort + '/3'));
+    it.appendChild(left);
+    var right = el('div');
+    right.appendChild(el('div', 'signal caps', c.signal));
+    right.appendChild(el('h3', null, c.reading.split('.')[0] + '.'));
+    right.appendChild(el('p', null, c.reading));
+    var play = el('div', 'play');
+    play.appendChild(el('b', null, 'A jogada'));
+    play.appendChild(el('p', null, c.play));
+    right.appendChild(play);
+    right.appendChild(el('div', 'fine caps', 'Ref: ' + (c.refs || []).join(' · ')));
+    it.appendChild(right);
+    rg.appendChild(it);
+  });
+
+  /* ---------- Studio ---------- */
+  var studio = data.studio || { intro: '', seeds: [] };
+  document.getElementById('studio-intro').textContent = studio.intro;
+  var sl = document.getElementById('studio-list');
+  studio.seeds.forEach(function (s) {
+    var seed = el('article', 'seed');
+    var head = el('div', 'seed-head');
+    head.appendChild(el('span', 'seed-platform caps', s.platform));
+    head.appendChild(el('span', 'seed-format caps', s.format));
+    var btn = el('button', 'seed-copy', 'Copiar');
+    btn.type = 'button';
+    btn.addEventListener('click', function () {
+      var full = s.hook + '\n\n' + s.draft + '\n\n' + (s.hashtags || []).join(' ');
+      function done() {
+        btn.textContent = 'Copiado ✓'; btn.classList.add('done');
+        setTimeout(function () { btn.textContent = 'Copiar'; btn.classList.remove('done'); }, 2000);
+      }
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(full).then(done, done);
+      else done();
+    });
+    head.appendChild(btn);
+    seed.appendChild(head);
+    seed.appendChild(el('h3', 'seed-hook', s.hook));
+    seed.appendChild(el('div', 'seed-draft', s.draft));
+    seed.appendChild(el('div', 'seed-tags caps', (s.hashtags || []).join('  ')));
+    sl.appendChild(seed);
+  });
+
+  /* ---------- Arquivo ---------- */
+  var archive = data.archive || [{ date: data.meta.date, revision: data.meta.revision, stories: data.meta.story_count, headline: data.hero.title }];
+  var at = document.getElementById('arch-table');
+  archive.forEach(function (ed, i) {
+    var it = el('div', 'aitem' + (i === 0 ? ' current' : ''));
+    it.appendChild(el('span', 'd', ed.date));
+    it.appendChild(el('span', 'r caps', ed.revision + ' — ' + ed.stories + ' histórias'));
+    it.appendChild(el('span', 'h', ed.headline));
+    at.appendChild(it);
+  });
+
+  /* ---------- Footer ---------- */
+  var fs = document.getElementById('foot-stats');
+  [data.meta.date_long, data.meta.story_count + ' histórias', data.meta.sources_active + ' fontes ativas'].forEach(function (t) {
+    fs.appendChild(el('span', null, t));
+  });
+})();
+</script>
