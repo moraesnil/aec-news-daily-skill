@@ -60,6 +60,48 @@ def build_archive(data_dir):
     return archive
 
 
+def prune_old_images(data_dir, current_name, keep_days=7):
+    """Remove imagens embutidas (data URIs) de edições com mais de keep_days.
+
+    As imagens só importam na página do dia; título/URL/resumo permanecem para
+    o arquivo morto e o dedup. Mantém o repositório leve (~600 KB -> ~20 KB
+    por edição antiga).
+    """
+    import datetime as _dt
+    try:
+        cur = _dt.date.fromisoformat(os.path.splitext(current_name)[0])
+    except ValueError:
+        return
+    pruned = 0
+    for path in sorted(glob.glob(os.path.join(data_dir, "*.json"))):
+        name = os.path.splitext(os.path.basename(path))[0]
+        try:
+            age = (cur - _dt.date.fromisoformat(name)).days
+        except ValueError:
+            continue
+        if age <= keep_days:
+            continue
+        try:
+            with open(path, encoding="utf-8") as f:
+                d = json.load(f)
+        except (OSError, json.JSONDecodeError):
+            continue
+        removed = False
+        if isinstance(d.get("hero"), dict) and d["hero"].pop("image", None) is not None:
+            removed = True
+        for sec in d.get("sections", []):
+            for it in sec.get("items", []):
+                if isinstance(it, dict) and it.pop("image", None) is not None:
+                    removed = True
+        if removed:
+            with open(path, "w", encoding="utf-8") as f:
+                json.dump(d, f, ensure_ascii=False, indent=1)
+                f.write("\n")
+            pruned += 1
+    if pruned:
+        print(f"Poda: imagens removidas de {pruned} edição(ões) com mais de {keep_days} dias.")
+
+
 def load_sources_list():
     """Lista de fontes de scripts/sources.json para a vista Fontes do portal."""
     path = os.path.join(REPO_ROOT, "scripts", "sources.json")
@@ -165,6 +207,8 @@ def main(argv=None):
             data = json.load(f)
         except json.JSONDecodeError as e:
             sys.exit(f"Erro: JSON de dados inválido ({data_path}): {e}")
+
+    prune_old_images(data_dir, os.path.basename(data_path))
 
     data["archive"] = build_archive(data_dir)
 

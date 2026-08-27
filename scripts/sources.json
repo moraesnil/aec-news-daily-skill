@@ -3,17 +3,32 @@
   "sources": [
     { "name": "ArchDaily Brasil", "url": "https://feeds.feedburner.com/ArchdailyBR", "type": "RSS direto", "lang": "PT", "nota": "" },
     { "name": "Dezeen", "url": "https://www.dezeen.com/feed/", "type": "RSS direto", "lang": "EN", "nota": "" },
+    { "name": "Designboom", "url": "https://www.designboom.com/feed/", "type": "RSS direto", "lang": "EN", "nota": "" },
+    { "name": "Architizer Journal", "url": "https://architizer.com/blog/feed/", "type": "RSS direto", "lang": "EN", "nota": "" },
     { "name": "The Architect's Newspaper", "url": "https://www.archpaper.com/feed/", "type": "RSS direto", "lang": "EN", "nota": "bloqueada por Cloudflare desde 12/08" },
     { "name": "Archinect", "url": "https://archinect.com/feed/news", "type": "RSS direto", "lang": "EN", "nota": "" },
+    { "name": "ENR", "url": "https://www.enr.com/rss/articles", "type": "RSS direto", "lang": "EN", "nota": "Engineering News-Record" },
+    { "name": "New Civil Engineer", "url": "https://www.newcivilengineer.com/feed/", "type": "RSS direto", "lang": "EN", "nota": "" },
     { "name": "Construction Dive", "url": "https://www.constructiondive.com/feeds/news/", "type": "RSS direto", "lang": "EN", "nota": "" },
     { "name": "Global Construction Review", "url": "https://www.globalconstructionreview.com/feed/", "type": "RSS direto", "lang": "EN", "nota": "" },
+    { "name": "Smart Cities Dive", "url": "https://www.smartcitiesdive.com/feeds/news/", "type": "RSS direto", "lang": "EN", "nota": "cidades e infraestrutura urbana" },
+    { "name": "AEC Magazine", "url": "https://aecmag.com/feed/", "type": "RSS direto", "lang": "EN", "nota": "BIM e tecnologia AEC" },
+    { "name": "Blog da Engenharia", "url": "https://blogdaengenharia.com/feed/", "type": "RSS direto", "lang": "PT", "nota": "" },
+    { "name": "Agência Brasil · Economia", "url": "https://agenciabrasil.ebc.com.br/rss/economia/feed.xml", "type": "RSS direto", "lang": "PT", "nota": "filtrar pautas de construção/infraestrutura/habitação" },
     { "name": "Revista PROJETO", "url": "https://revistaprojeto.com.br/feed/", "type": "RSS direto", "lang": "PT", "nota": "bloqueada por Cloudflare desde 12/08" },
+    { "name": "Téchne (GNews)", "url": "https://news.google.com/rss/search?q=site:revistatechne.com.br&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "" },
+    { "name": "Grandes Construções (GNews)", "url": "https://news.google.com/rss/search?q=site:grandesconstrucoes.com.br&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "" },
     { "name": "CBIC (GNews)", "url": "https://news.google.com/rss/search?q=site:cbic.org.br&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "" },
     { "name": "AECweb (GNews)", "url": "https://news.google.com/rss/search?q=site:aecweb.com.br&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "" },
     { "name": "CAUBR (GNews)", "url": "https://news.google.com/rss/search?q=site:caubr.gov.br&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "" },
+    { "name": "Sinduscon-SP (GNews)", "url": "https://news.google.com/rss/search?q=site:sindusconsp.com.br%20OR%20sinduscon&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "" },
     { "name": "Construção Civil BR (GNews)", "url": "https://news.google.com/rss/search?q=%22constru%C3%A7%C3%A3o%20civil%22%20when:2d&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "busca temática, últimas 48h" },
     { "name": "Mercado Imobiliário (GNews)", "url": "https://news.google.com/rss/search?q=%22mercado%20imobili%C3%A1rio%22%20when:2d&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "busca temática, últimas 48h" },
+    { "name": "Exame · Imobiliário (GNews)", "url": "https://news.google.com/rss/search?q=site:exame.com%20imobili%C3%A1rio%20when:3d&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "" },
+    { "name": "InfoMoney · Imobiliário (GNews)", "url": "https://news.google.com/rss/search?q=site:infomoney.com.br%20(imobili%C3%A1rio%20OR%20construtora)%20when:3d&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "" },
     { "name": "Infraestrutura BR (GNews)", "url": "https://news.google.com/rss/search?q=infraestrutura%20obras%20when:2d&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "busca temática, últimas 48h" },
-    { "name": "Sinduscon-SP (GNews)", "url": "https://news.google.com/rss/search?q=site:sindusconsp.com.br%20OR%20sinduscon&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "" }
+    { "name": "Minha Casa Minha Vida (GNews)", "url": "https://news.google.com/rss/search?q=%22Minha%20Casa%20Minha%20Vida%22%20when:2d&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "habitação popular, últimas 48h" },
+    { "name": "Materiais de Construção (GNews)", "url": "https://news.google.com/rss/search?q=(%22materiais%20de%20constru%C3%A7%C3%A3o%22%20OR%20cimento%20OR%20%22a%C3%A7o%22)%20constru%C3%A7%C3%A3o%20when:2d&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "busca temática, últimas 48h" },
+    { "name": "BIM Brasil (GNews)", "url": "https://news.google.com/rss/search?q=(BIM%20OR%20%22constru%C3%A7%C3%A3o%20industrializada%22)%20when:7d&hl=pt-BR&gl=BR&ceid=BR:pt-419", "type": "Google News", "lang": "PT", "nota": "busca temática, últimos 7 dias" }
   ]
 }
