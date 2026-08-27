@@ -31,9 +31,14 @@ def latest_data_file(data_dir):
 
 
 def build_archive(data_dir):
-    """Um registro por arquivo portal/data/*.json, em ordem decrescente de data."""
+    """Um registro por arquivo portal/data/*.json, em ordem decrescente de data.
+
+    Cada edição recebe um número global sequencial (Nº 001 = a mais antiga),
+    calculado pela posição do arquivo na ordem cronológica.
+    """
+    paths = sorted(glob.glob(os.path.join(data_dir, "*.json")))
     archive = []
-    for path in sorted(glob.glob(os.path.join(data_dir, "*.json")), reverse=True):
+    for idx, path in enumerate(paths, start=1):
         date = os.path.splitext(os.path.basename(path))[0]
         try:
             with open(path, encoding="utf-8") as f:
@@ -46,11 +51,80 @@ def build_archive(data_dir):
         hero = d.get("hero") or {}
         archive.append({
             "date": date,
+            "edition_number": idx,
             "revision": meta.get("revision"),
             "stories": meta.get("story_count"),
             "headline": hero.get("title"),
         })
+    archive.reverse()
     return archive
+
+
+def load_sources_list():
+    """Lista de fontes de scripts/sources.json para a vista Fontes do portal."""
+    path = os.path.join(REPO_ROOT, "scripts", "sources.json")
+    try:
+        with open(path, encoding="utf-8") as f:
+            cfg = json.load(f)
+        return [{"name": s.get("name"), "type": s.get("type"),
+                 "lang": s.get("lang"), "nota": s.get("nota", "")}
+                for s in cfg.get("sources", [])]
+    except (OSError, json.JSONDecodeError):
+        return []
+
+
+def _xml_escape(s):
+    return (str(s or "").replace("&", "&amp;").replace("<", "&lt;")
+            .replace(">", "&gt;").replace('"', "&quot;"))
+
+
+def write_feed(data, out_path):
+    """Gera um RSS 2.0 da edição atual (hero + todas as notícias)."""
+    meta = data.get("meta") or {}
+    date = meta.get("date", "")
+    # DD.MM.AAAA -> RFC822 aproximado (11:00 GMT, horário da emissão)
+    pub = ""
+    try:
+        d, m, y = date.split(".")
+        import datetime as _dt
+        pub = _dt.datetime(int(y), int(m), int(d), 11, 0).strftime(
+            "%a, %d %b %Y %H:%M:%S GMT")
+    except (ValueError, AttributeError):
+        pass
+    items = []
+    hero = data.get("hero") or {}
+    if hero.get("title"):
+        items.append((hero["title"], hero.get("url", ""),
+                      (hero.get("paragraphs") or [""])[0], hero.get("source", "")))
+    for sec in data.get("sections", []):
+        for it in sec.get("items", []):
+            items.append((it.get("title", ""), it.get("url", ""),
+                          it.get("summary", ""), it.get("source", "")))
+    rows = []
+    for title, link, desc, src in items:
+        rows.append(
+            "  <item>\n"
+            f"   <title>{_xml_escape(title)}</title>\n"
+            f"   <link>{_xml_escape(link)}</link>\n"
+            f"   <guid isPermaLink=\"false\">{_xml_escape(link)}</guid>\n"
+            f"   <description>{_xml_escape(desc)} (via {_xml_escape(src)})</description>\n"
+            f"   <pubDate>{pub}</pubDate>\n"
+            "  </item>")
+    ed = meta.get("edition_number")
+    xml = (
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+        "<rss version=\"2.0\">\n"
+        " <channel>\n"
+        "  <title>AEC NEWS</title>\n"
+        "  <link>https://claude.ai/code/artifact/a4dbeb62-d306-4a49-b262-343337bbf0b3</link>\n"
+        f"  <description>Diário da construção civil — edição Nº {ed:03d} de {_xml_escape(date)}</description>\n"
+        "  <language>pt-BR</language>\n"
+        f"  <lastBuildDate>{pub}</lastBuildDate>\n"
+        + "\n".join(rows) + "\n"
+        " </channel>\n"
+        "</rss>\n")
+    with open(out_path, "w", encoding="utf-8") as f:
+        f.write(xml)
 
 
 def count_stories(data):
@@ -94,6 +168,23 @@ def main(argv=None):
 
     data["archive"] = build_archive(data_dir)
 
+    # Número global da edição (Nº 001 = a mais antiga) — complementa o campo
+    # meta.revision, que conta apenas revisões DENTRO do mesmo dia (R00, R01…).
+    cur_date = os.path.splitext(os.path.basename(data_path))[0]
+    for entry in data["archive"]:
+        if entry["date"] == cur_date:
+            data.setdefault("meta", {})["edition_number"] = entry["edition_number"]
+            break
+
+    data["sources_list"] = load_sources_list()
+
+    feed_path = os.path.join(REPO_ROOT, "portal", "feed.xml")
+    try:
+        write_feed(data, feed_path)
+    except Exception as e:
+        print(f"Aviso: falha ao gerar feed.xml: {e}", file=sys.stderr)
+        feed_path = None
+
     with open(args.template, encoding="utf-8") as f:
         template = f.read()
     if PLACEHOLDER not in template:
@@ -109,10 +200,15 @@ def main(argv=None):
         f.write(html_out)
 
     size_kb = os.path.getsize(args.out) / 1024
+    ed = (data.get("meta") or {}).get("edition_number")
     print(f"Portal gerado: {args.out}")
     print(f" - dados:    {data_path}")
+    if ed:
+        print(f" - edição:   Nº {ed:03d}")
     print(f" - notícias: {count_stories(data)}")
     print(f" - arquivo:  {size_kb:.1f} KB ({len(data['archive'])} dia(s) no arquivo morto)")
+    if feed_path:
+        print(f" - feed:     {feed_path}")
     return 0
 
 

@@ -26,18 +26,31 @@ USER_AGENT = "Mozilla/5.0 (X11; Linux x86_64)"
 TIMEOUT = 25          # segundos por fonte
 MAX_ITEMS = 8         # itens por fonte
 
+import os
+
+SOURCES_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "sources.json")
+
+# Fallback caso scripts/sources.json não exista
 FEEDS = {
     "ArchDaily Brasil": "https://feeds.feedburner.com/ArchdailyBR",
     "Dezeen": "https://www.dezeen.com/feed/",
-    "The Architect's Newspaper": "https://www.archpaper.com/feed/",
-    "Archinect": "https://archinect.com/feed/news",
     "Construction Dive": "https://www.constructiondive.com/feeds/news/",
     "Global Construction Review": "https://www.globalconstructionreview.com/feed/",
-    "Revista PROJETO": "https://revistaprojeto.com.br/feed/",
-    "CBIC (GNews)": "https://news.google.com/rss/search?q=site:cbic.org.br&hl=pt-BR&gl=BR&ceid=BR:pt-419",
-    "AECweb (GNews)": "https://news.google.com/rss/search?q=site:aecweb.com.br&hl=pt-BR&gl=BR&ceid=BR:pt-419",
-    "CAUBR (GNews)": "https://news.google.com/rss/search?q=site:caubr.gov.br&hl=pt-BR&gl=BR&ceid=BR:pt-419",
 }
+
+
+def load_feeds():
+    """Carrega as fontes de scripts/sources.json (editável); fallback embutido."""
+    try:
+        with open(SOURCES_FILE, encoding="utf-8") as f:
+            cfg = json.load(f)
+        feeds = {s["name"]: s["url"] for s in cfg.get("sources", []) if s.get("url")}
+        if feeds:
+            return feeds
+    except (OSError, json.JSONDecodeError, KeyError, TypeError) as e:
+        print(f"Aviso: sources.json ilegível ({e}); usando fontes embutidas.",
+              file=sys.stderr)
+    return FEEDS
 
 
 def curl(url, text=True, timeout=TIMEOUT, referer=None):
@@ -140,8 +153,9 @@ def fetch_one(name_url):
 
 
 def cmd_feeds(args):
-    with concurrent.futures.ThreadPoolExecutor(max_workers=len(FEEDS)) as ex:
-        sources = dict(ex.map(fetch_one, FEEDS.items()))
+    feeds = load_feeds()
+    with concurrent.futures.ThreadPoolExecutor(max_workers=len(feeds)) as ex:
+        sources = dict(ex.map(fetch_one, feeds.items()))
     out = {
         "fetched_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
         "sources": sources,
