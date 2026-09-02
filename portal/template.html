@@ -74,7 +74,7 @@ nav.views kbd{display:none}
 
 /* ---- primeira página ---- */
 .front{display:grid;grid-template-columns:1fr;gap:0;padding:22px 0 30px}
-@media(min-width:960px){.front{grid-template-columns:1fr 320px;gap:34px}
+@media(min-width:960px){.front{grid-template-columns:1fr 320px;gap:34px;align-items:start}
   .rail{border-left:1px solid var(--hair);padding-left:30px}}
 .lead h1{font-family:var(--serif);font-weight:700;font-size:clamp(28px,4.4vw,44px);
   line-height:1.12;margin:8px 0 12px;text-wrap:balance}
@@ -96,46 +96,56 @@ nav.views kbd{display:none}
 .points li::before{content:"—";position:absolute;left:0;color:var(--muted)}
 
 /* ---- rail Últimas ---- */
-.rail h4,.band>h2,.opn>h2{font-family:var(--sans);font-size:13px;font-weight:700;
+.rail h4,.opn>h2{font-family:var(--sans);font-size:13px;font-weight:700;
   letter-spacing:.18em;text-transform:uppercase;margin:0}
 .rail h4{padding-bottom:10px;border-bottom:2px solid var(--ink)}
 .rail ol{list-style:none;margin:0;padding:0}
 .rail li{padding:12px 0;border-bottom:1px solid var(--hair)}
-.rail li a{display:grid;grid-template-columns:1fr;gap:10px;align-items:start}
-.rail li.hasimg a{grid-template-columns:1fr 60px}
-.rail .thumb{width:60px;height:60px;object-fit:cover}
+.rail li.over{display:none}
+.rail li a{display:grid;grid-template-columns:1fr;gap:12px;align-items:start}
+.rail li.hasimg a{grid-template-columns:1fr 84px}
+.rail .thumb{width:84px;height:56px;object-fit:cover}
 .rail li .hl{font-size:15.5px;font-weight:700;line-height:1.3;display:block}
 .rail li .byline{margin-top:5px;display:flex;gap:8px;align-items:center}
 .rail .sdot{width:7px;height:7px;border-radius:50%;background:var(--dot,var(--muted));flex:none}
+.lead figure img{width:100%;aspect-ratio:16/9;object-fit:cover}
 
-/* ---- bandas de seção ---- */
+/* ---- segunda linha de destaques (capa) ---- */
+.tier{display:grid;grid-template-columns:1fr;gap:24px;margin-top:28px;padding-top:24px;
+  border-top:1px solid var(--hair)}
+@media(min-width:700px){.tier{grid-template-columns:repeat(var(--n,3),1fr)}}
+.tcard{border-right:1px solid var(--hair);padding-right:24px}
+.tcard:last-child{border-right:0;padding-right:0}
+@media(max-width:699px){.tcard{border-right:0;padding-right:0;border-bottom:1px solid var(--hair);padding-bottom:16px}}
+
+/* ---- cards (capa + seções) ---- */
+.card img,.tcard img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block}
+.card h3,.tcard h3{font-family:var(--serif);font-size:19px;line-height:1.25;margin:10px 0 6px;font-weight:700}
+.card.noimg h3{font-size:22px;margin-top:4px}
+.card p,.tcard p{margin:0 0 8px;font-size:15px;line-height:1.55}
+.card .kick,.tcard .kick{font-size:11px;display:block;margin-bottom:6px}
+.card.noimg{border-top:3px solid var(--kc,var(--blue));padding-top:12px}
+
+/* ---- bandas de seção: retângulos fechados ---- */
 .band{padding:26px 0 8px}
 .band>header{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);
   padding-bottom:8px}
 .band>header h2{font-family:var(--display);font-weight:700;font-size:26px;margin:0;letter-spacing:.01em}
 .band>header .code{font-family:var(--sans);font-weight:700;font-size:13px;
   color:var(--kc,var(--blue))}
-.band-body{display:grid;grid-template-columns:1fr;gap:28px;padding:20px 0}
-@media(min-width:900px){
-  .band-body{grid-template-columns:7fr 5fr}
-  .band-body .briefs{border-left:1px solid var(--hair);padding-left:28px}
-  .band:nth-of-type(even) .band-body .feature{order:2}
-  .band:nth-of-type(even) .band-body .briefs{order:1;border-left:0;padding-left:0;
-    border-right:1px solid var(--hair);padding-right:28px}
-}
-.feature figure{margin:0}
-.feature h3{font-family:var(--serif);font-size:clamp(20px,2.6vw,27px);line-height:1.2;
-  margin:12px 0 8px;font-weight:700}
-.feature p{margin:0 0 10px;font-size:16px;line-height:1.6}
-.feature figcaption{font-family:var(--sans);font-size:12px;color:var(--muted);padding-top:6px}
-.briefs{display:flex;flex-direction:column}
-.brief{padding:13px 0;border-bottom:1px solid var(--hair)}
-.brief:first-child{padding-top:0}
-.brief:last-child{border-bottom:0}
-.brief a{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}
-.brief.hasimg a{grid-template-columns:1fr 110px}
-.brief .thumb{width:110px;height:74px;object-fit:cover}
-.brief h3{font-family:var(--serif);font-size:16.5px;line-height:1.3;margin:0 0 5px;font-weight:700}
+.cards{display:grid;grid-template-columns:1fr;gap:26px;padding:20px 0 6px}
+@media(min-width:700px){.cards{grid-template-columns:repeat(var(--n,3),1fr)}}
+.card{border-right:1px solid var(--hair);padding-right:26px}
+.card:last-child{border-right:0;padding-right:0}
+@media(max-width:699px){.card{border-right:0;padding-right:0;border-bottom:1px solid var(--hair);padding-bottom:16px}}
+.card.wide{display:grid;grid-template-columns:1fr;gap:22px;border-right:0;padding-right:0}
+@media(min-width:700px){.card.wide{grid-template-columns:5fr 7fr;align-items:start}}
+.card.wide h3{font-size:clamp(22px,2.6vw,28px);margin-top:0}
+.notes{display:grid;grid-template-columns:1fr;gap:0 28px;border-top:1px solid var(--hair);margin-top:8px}
+@media(min-width:700px){.notes{grid-template-columns:repeat(var(--n,3),1fr)}}
+.note{padding:14px 0;border-bottom:1px solid var(--hair)}
+.note h3{font-family:var(--serif);font-size:16.5px;line-height:1.3;margin:0 0 5px;font-weight:700}
+.note p{margin:0 0 6px;font-size:14px;line-height:1.5;color:var(--muted)}
 
 /* ---- do editor ---- */
 .editor{background:var(--ivory);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
@@ -231,8 +241,11 @@ footer b{color:var(--ink);font-weight:600}
   <section class="view" id="v-edicao">
     <div class="chips" id="chips"></div>
     <div class="front">
-      <article class="lead" id="lead"></article>
-      <aside class="rail" id="rail"></aside>
+      <div class="leftcol" id="leftcol">
+        <article class="lead" id="lead"></article>
+        <div class="tier" id="tier" hidden></div>
+      </div>
+      <aside class="rail"><div id="rail"></div></aside>
     </div>
     <div id="bands"></div>
     <div class="editor" id="editor" hidden></div>
@@ -355,14 +368,43 @@ if(H.title){
   lead.append(by);
 }
 
-/* rail Últimas + bandas de seção */
+/* segunda linha de destaques: 1 matéria com foto de até 3 seções distintas */
 const SECS=DATA.sections||[];
+const onFront=new Set();
+const tierItems=[];
+for(const sec of SECS){
+  if(tierItems.length>=3) break;
+  const it=(sec.items||[]).find(i=>i.image);
+  if(it){ tierItems.push([sec,it]); onFront.add(it); }
+}
+function byline(it, prefix){
+  const by=el("div",{class:"byline"});
+  if(prefix) by.append(prefix);
+  by.append(el("b",{text:it.source||""}), " · "+(it.date||""));
+  return by;
+}
+function card(sec,it,cls){
+  const c=el("article",{class:cls+(it.image?"":" noimg"),"data-sec":sec.id,style:`--kc:var(${catVar(sec.id)})`});
+  const a=el("a",{href:it.url||"#",target:"_blank",rel:"noopener"});
+  if(cls==="tcard") c.append(el("span",{class:"kick",text:sec.name||sec.code}));
+  if(it.image) a.append(el("img",{src:it.image,alt:"",loading:"lazy"}));
+  a.append(el("h3",{text:it.title}));
+  c.append(a, el("p",{text:it.summary||""}), byline(it,"Fonte: "));
+  return c;
+}
+const tier=document.getElementById("tier");
+if(tierItems.length){
+  tier.hidden=false; tier.style.setProperty("--n",tierItems.length);
+  tierItems.forEach(([sec,it])=>tier.append(card(sec,it,"tcard")));
+}
+
+/* rail Últimas: tudo que não está na capa, balanceado à altura da coluna esquerda */
 const rail=document.getElementById("rail");
 rail.append(el("h4",{text:"Últimas"}));
 const railList=el("ol");
 const railItems=[];
-SECS.forEach(sec=>{ (sec.items||[]).forEach(it=>railItems.push([sec,it])); });
-railItems.slice(0,12).forEach(([sec,it])=>{
+SECS.forEach(sec=>{ (sec.items||[]).forEach(it=>{ if(!onFront.has(it)) railItems.push([sec,it]); }); });
+railItems.slice(0,16).forEach(([sec,it])=>{
   const li=el("li",{class:it.image?"hasimg":"","data-sec":sec.id});
   const a=el("a",{href:it.url||"#",target:"_blank",rel:"noopener"});
   const txt=el("span");
@@ -375,53 +417,54 @@ railItems.slice(0,12).forEach(([sec,it])=>{
   li.append(a); railList.append(li);
 });
 rail.append(railList);
+function balanceRail(){
+  const lis=[...railList.children];
+  lis.forEach(li=>li.classList.remove("over"));
+  if(innerWidth<960) return;
+  const lc=document.getElementById("leftcol");
+  const target=[...lc.children].reduce((h,c)=>h+(c.hidden?0:c.offsetHeight),0)+28;
+  const vis=lis.filter(li=>li.style.display!=="none");
+  while(rail.offsetHeight>target && vis.length>5){ vis.pop().classList.add("over"); }
+}
 
+/* bandas de seção: fileira de até 3 cards (fotos primeiro) + grade de notas com resumo */
 const bands=document.getElementById("bands");
 SECS.forEach(sec=>{
+  const items=(sec.items||[]).filter(it=>!onFront.has(it));
+  if(!items.length) return;
   const band=el("div",{class:"band","data-sec":sec.id,style:`--kc:var(${catVar(sec.id)})`});
   band.append(el("header",null,
     el("span",{class:"code",text:sec.code||""}),
     el("h2",{text:sec.name||""})));
-  const items=sec.items||[];
-  const body=el("div",{class:"band-body"});
-  // destaque = primeiro item com imagem (senão o primeiro); demais viram notas curtas
-  let fi=items.findIndex(it=>it.image); if(fi<0) fi=0;
-  const ft=items[fi];
-  if(ft){
-    const f=el("article",{class:"feature"});
-    const a=el("a",{href:ft.url||"#",target:"_blank",rel:"noopener"});
-    if(ft.image) a.append(fig(ft.image,ft.title,""));
-    a.append(el("h3",{text:ft.title}));
-    f.append(a, el("p",{text:ft.summary||""}));
-    const by=el("div",{class:"byline"});
-    by.append("Fonte: "); by.append(el("b",{text:ft.source||""}), " · "+(ft.date||""));
-    f.append(by); body.append(f);
-  }
-  const rest=items.filter((_,i)=>i!==fi);
+  const withImg=items.filter(i=>i.image), noImg=items.filter(i=>!i.image);
+  const ordered=withImg.concat(noImg);
+  const top=ordered.slice(0,3), rest=ordered.slice(3);
+  const cards=el("div",{class:"cards"});
+  if(top.length===1){ cards.style.setProperty("--n",1); cards.append(card(sec,top[0],"card wide")); }
+  else{ cards.style.setProperty("--n",top.length); top.forEach(it=>cards.append(card(sec,it,"card"))); }
+  band.append(cards);
   if(rest.length){
-    const briefs=el("div",{class:"briefs"});
+    const notes=el("div",{class:"notes"}); notes.style.setProperty("--n",Math.min(3,rest.length));
     rest.forEach(it=>{
-      const b=el("article",{class:"brief"+(it.image?" hasimg":"")});
+      const n=el("article",{class:"note"});
       const a=el("a",{href:it.url||"#",target:"_blank",rel:"noopener"});
-      const txt=el("span");
-      txt.append(el("h3",{text:it.title}));
-      const by=el("span",{class:"byline"});
-      by.append(el("b",{text:it.source||""}), " · "+(it.date||""));
-      txt.append(by); a.append(txt);
-      if(it.image) a.append(el("img",{class:"thumb",src:it.image,alt:"",loading:"lazy"}));
-      b.append(a); briefs.append(b);
+      a.append(el("h3",{text:it.title}));
+      n.append(a, el("p",{text:it.summary||""}), byline(it,""));
+      notes.append(n);
     });
-    body.append(briefs);
+    band.append(notes);
   }
-  band.append(body); bands.append(band);
+  bands.append(band);
 });
 
 /* filtros */
 const chips=document.getElementById("chips");
 function applyFilter(id){
   chips.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.f===id?"true":"false"));
-  document.querySelectorAll("#bands .band").forEach(b=>b.style.display=(id==="all"||b.dataset.sec===id)?"":"none");
-  railList.querySelectorAll("li").forEach(li=>li.style.display=(id==="all"||li.dataset.sec===id)?"":"none");
+  const show=elm=>elm.style.display=(id==="all"||elm.dataset.sec===id)?"":"none";
+  document.querySelectorAll("#bands .band, #tier .tcard").forEach(show);
+  railList.querySelectorAll("li").forEach(show);
+  balanceRail();
 }
 const allBtn=el("button",{type:"button","data-f":"all","aria-pressed":"true",text:"Tudo"});
 allBtn.onclick=()=>applyFilter("all"); chips.append(allBtn);
@@ -430,6 +473,10 @@ SECS.forEach(sec=>{
   b.append(el("span",{class:"dot"}), sec.name||sec.code);
   b.onclick=()=>applyFilter(sec.id); chips.append(b);
 });
+balanceRail();
+addEventListener("load",balanceRail);
+if(document.fonts&&document.fonts.ready) document.fonts.ready.then(balanceRail);
+let _rt; addEventListener("resize",()=>{clearTimeout(_rt);_rt=setTimeout(balanceRail,120);});
 
 /* do editor */
 const notes=DATA.editor_notes||[];

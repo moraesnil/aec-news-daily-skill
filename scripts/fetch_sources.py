@@ -220,6 +220,11 @@ def build_data_uri(img_bytes, hero=False):
     from PIL import Image
 
     img = Image.open(io.BytesIO(img_bytes)).convert("RGB")
+    # Rejeita "fotos" que na verdade são documentos/prints (fundo quase todo branco)
+    small = img.resize((64, 64))
+    white = sum(1 for px in small.getdata() if min(px) > 235) / 4096
+    if white > 0.6:
+        raise RuntimeError(f"imagem parece documento/print ({white:.0%} de branco) — descartada")
     width = 900 if hero else 640
     ratio = 16 / 9 if hero else 3 / 2
     if img.width > width:
