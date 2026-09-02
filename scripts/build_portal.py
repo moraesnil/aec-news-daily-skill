@@ -157,7 +157,7 @@ def write_feed(data, out_path):
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
         "<rss version=\"2.0\">\n"
         " <channel>\n"
-        "  <title>AEC NEWS</title>\n"
+        "  <title>AGIO NEWS</title>\n"
         "  <link>https://claude.ai/code/artifact/a4dbeb62-d306-4a49-b262-343337bbf0b3</link>\n"
         f"  <description>Diário da construção civil — edição Nº {ed:03d} de {_xml_escape(date)}</description>\n"
         "  <language>pt-BR</language>\n"

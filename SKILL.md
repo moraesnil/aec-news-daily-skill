@@ -1,16 +1,16 @@
 ---
 name: aec-news-daily-skill
 description: |
-  Gera a edição diária do portal AEC NEWS — boletim curado de notícias de
+  Gera a edição diária do portal AGIO NEWS — boletim curado de notícias de
   Arquitetura, Engenharia e Construção (Brasil e internacional), publicado
   como Artifact HTML em URL fixa. Use esta skill quando o usuário pedir para
-  gerar, atualizar ou republicar a edição do dia do AEC NEWS, ou quando a
+  gerar, atualizar ou republicar a edição do dia do AGIO NEWS, ou quando a
   Routine diária agendada disparar a produção da edição.
 ---
 
-# AEC NEWS — Edição Diária
+# AGIO NEWS — Edição Diária
 
-Esta skill produz a edição diária do portal AEC NEWS: coleta notícias de fontes RSS do setor AEC (Arquitetura, Engenharia e Construção), cura 12–18 matérias com resumos em pt-BR, escreve radar estratégico e sementes de conteúdo, grava o data file do dia em `portal/data/`, regenera o `portal/index.html` e republica o Artifact na URL fixa do portal. A memória do sistema é o próprio repositório: cada edição vive em `portal/data/YYYY-MM-DD.json`, e a deduplicação é feita contra os data files dos últimos 7 dias. A v1 usava Notion e Apify; a v2 eliminou ambos — o fluxo é 100% RSS e git.
+Esta skill produz a edição diária do portal AGIO NEWS: coleta notícias de fontes RSS do setor AEC (Arquitetura, Engenharia e Construção), cura 12–18 matérias com resumos em pt-BR, escreve radar estratégico e sementes de conteúdo, grava o data file do dia em `portal/data/`, regenera o `portal/index.html` e republica o Artifact na URL fixa do portal. A memória do sistema é o próprio repositório: cada edição vive em `portal/data/YYYY-MM-DD.json`, e a deduplicação é feita contra os data files dos últimos 7 dias. A v1 usava Notion e Apify; a v2 eliminou ambos — o fluxo é 100% RSS e git.
 
 Portal publicado: https://claude.ai/code/artifact/a4dbeb62-d306-4a49-b262-343337bbf0b3
 

@@ -1,4 +1,4 @@
-# Portal AEC NEWS
+# Portal AGIO NEWS
 
 Portal multiuso em HTML único, diagramado como **prancha técnica de arquitetura**
 (tema claro = papel de desenho; tema escuro = cianotipia/blueprint), com 4 vistas

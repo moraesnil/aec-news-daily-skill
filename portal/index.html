@@ -1,23 +1,23 @@
-<title>AEC NEWS</title>
+<title>AGIO NEWS</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Libre+Franklin:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
 <style>
 /* Jornal impresso: tema claro fixo — papel-jornal em qualquer modo do leitor */
 :root{
-  --paper:#F7F4EC; --ivory:#EFEBDF; --ink:#161511; --muted:#5C574C;
+  --paper:#F7F4EC; --ivory:#EFEBDF; --ink:#161511; --muted:#46423A;
   --hair:#D8D3C5; --hair-strong:#161511; --blue:#326891; --blue-soft:#E7ECEA;
   --c-arq:#326891; --c-eng:#A81817; --c-obr:#A81817; --c-mer:#1A7343;
   --c-mat:#8A6D3B; --c-tec:#5B3A8E; --c-bra:#B45309;
-  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
   --serif:Georgia,'Iowan Old Style','Times New Roman',serif;
   --sans:'Libre Franklin',Helvetica,Arial,sans-serif;
-  --black:'UnifrakturMaguntia',Georgia,serif;
+  --display:'Playfair Display',Georgia,serif;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--paper) var(--grain);color:var(--ink);font-family:var(--serif);
-  font-size:16px;line-height:1.55}
+  font-size:17px;line-height:1.6}
 a{color:inherit;text-decoration:none}
 a:hover .hl, a:hover h1, a:hover h3, .story a:hover{color:var(--blue)}
 a:focus-visible,button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
@@ -25,7 +25,7 @@ img{max-width:100%;display:block}
 .wrap{max-width:1180px;margin:0 auto;padding:0 20px}
 
 /* ---- barra de data ---- */
-.datebar{font-family:var(--sans);font-size:11.5px;letter-spacing:.02em;
+.datebar{font-family:var(--sans);font-size:12.5px;letter-spacing:.02em;
   display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;
   padding:10px 0;border-bottom:1px solid var(--hair)}
 .datebar b{font-weight:600}
@@ -33,10 +33,10 @@ img{max-width:100%;display:block}
 
 /* ---- cabeçalho / masthead ---- */
 .masthead{text-align:center;padding:26px 0 14px}
-.masthead .name{font-family:var(--black);font-weight:400;font-size:clamp(52px,9vw,92px);
-  line-height:.95;margin:0;letter-spacing:.01em}
-.masthead .tag{font-family:var(--sans);font-size:12px;letter-spacing:.28em;
-  text-transform:uppercase;color:var(--muted);margin-top:10px}
+.masthead .name{font-family:var(--display);font-weight:900;font-size:clamp(44px,7.5vw,84px);
+  line-height:1;margin:0;letter-spacing:.04em;text-transform:uppercase;color:var(--ink)}
+.masthead .tag{font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:.3em;
+  text-transform:uppercase;color:var(--ink);margin-top:12px}
 .rule2{border-top:3px double var(--hair-strong);margin:0}
 .rule1{border-top:1px solid var(--hair-strong)}
 
@@ -45,8 +45,8 @@ nav.views{position:sticky;top:0;z-index:40;background:var(--paper) var(--grain);
   border-top:1px solid var(--hair-strong);border-bottom:1px solid var(--hair)}
 nav.views .wrap{display:flex;justify-content:center;gap:4px;flex-wrap:wrap}
 nav.views button{appearance:none;background:none;border:0;cursor:pointer;
-  font-family:var(--sans);font-size:12.5px;font-weight:600;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--ink);padding:12px 16px;position:relative}
+  font-family:var(--sans);font-size:13.5px;font-weight:700;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--ink);padding:13px 16px;position:relative}
 nav.views button[aria-current="true"]::after{content:"";position:absolute;
   left:16px;right:16px;bottom:-1px;border-bottom:2px solid var(--ink)}
 nav.views button:hover{color:var(--blue)}
@@ -60,16 +60,16 @@ nav.views kbd{display:none}
   font-family:var(--sans)}
 .chips button{appearance:none;cursor:pointer;background:var(--paper);color:var(--ink);
   border:1px solid var(--hair);border-radius:999px;font-family:var(--sans);
-  font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
-  padding:6px 14px;display:flex;align-items:center;gap:7px}
+  font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:7px 14px;display:flex;align-items:center;gap:7px}
 .chips button .dot{width:8px;height:8px;border-radius:50%;background:var(--dot,var(--muted))}
 .chips button[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .chips button[aria-pressed="true"] .dot{background:var(--dot,var(--paper))}
 
 /* ---- kickers e rótulos ---- */
-.kick{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.16em;
+.kick{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.16em;
   text-transform:uppercase;color:var(--kc,var(--blue))}
-.byline{font-family:var(--sans);font-size:11.5px;color:var(--muted)}
+.byline{font-family:var(--sans);font-size:12.5px;color:var(--muted)}
 .byline b{color:var(--ink);font-weight:600}
 
 /* ---- primeira página ---- */
@@ -79,7 +79,7 @@ nav.views kbd{display:none}
 .lead h1{font-family:var(--serif);font-weight:700;font-size:clamp(28px,4.4vw,44px);
   line-height:1.12;margin:8px 0 12px;text-wrap:balance}
 .lead figure{margin:14px 0 8px}
-.lead figcaption,.card figcaption{font-family:var(--sans);font-size:11px;
+.lead figcaption,.card figcaption{font-family:var(--sans);font-size:12px;
   color:var(--muted);padding-top:6px;line-height:1.45}
 .lead .cols{column-count:1;column-gap:30px;column-rule:1px solid var(--hair);
   font-size:16.5px;line-height:1.62}
@@ -89,14 +89,14 @@ nav.views kbd{display:none}
   line-height:.82;padding:4px 8px 0 0}
 .points{border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
   margin:16px 0;padding:12px 0}
-.points h4{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.16em;
+.points h4{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.16em;
   text-transform:uppercase;margin:0 0 8px}
 .points ul{margin:0;padding:0;list-style:none}
-.points li{padding:5px 0 5px 18px;position:relative;font-size:14.5px;line-height:1.5}
+.points li{padding:5px 0 5px 18px;position:relative;font-size:15.5px;line-height:1.5}
 .points li::before{content:"—";position:absolute;left:0;color:var(--muted)}
 
 /* ---- rail Últimas ---- */
-.rail h4,.band>h2,.opn>h2{font-family:var(--sans);font-size:12px;font-weight:700;
+.rail h4,.band>h2,.opn>h2{font-family:var(--sans);font-size:13px;font-weight:700;
   letter-spacing:.18em;text-transform:uppercase;margin:0}
 .rail h4{padding-bottom:10px;border-bottom:2px solid var(--ink)}
 .rail ol{list-style:none;margin:0;padding:0}
@@ -104,7 +104,7 @@ nav.views kbd{display:none}
 .rail li a{display:grid;grid-template-columns:1fr;gap:10px;align-items:start}
 .rail li.hasimg a{grid-template-columns:1fr 60px}
 .rail .thumb{width:60px;height:60px;object-fit:cover}
-.rail li .hl{font-size:14.5px;font-weight:700;line-height:1.3;display:block}
+.rail li .hl{font-size:15.5px;font-weight:700;line-height:1.3;display:block}
 .rail li .byline{margin-top:5px;display:flex;gap:8px;align-items:center}
 .rail .sdot{width:7px;height:7px;border-radius:50%;background:var(--dot,var(--muted));flex:none}
 
@@ -112,7 +112,8 @@ nav.views kbd{display:none}
 .band{padding:26px 0 8px}
 .band>header{display:flex;align-items:baseline;gap:14px;border-bottom:2px solid var(--ink);
   padding-bottom:8px}
-.band>header .code{font-family:var(--sans);font-weight:700;font-size:12px;
+.band>header h2{font-family:var(--display);font-weight:700;font-size:26px;margin:0;letter-spacing:.01em}
+.band>header .code{font-family:var(--sans);font-weight:700;font-size:13px;
   color:var(--kc,var(--blue))}
 .band-body{display:grid;grid-template-columns:1fr;gap:28px;padding:20px 0}
 @media(min-width:900px){
@@ -125,8 +126,8 @@ nav.views kbd{display:none}
 .feature figure{margin:0}
 .feature h3{font-family:var(--serif);font-size:clamp(20px,2.6vw,27px);line-height:1.2;
   margin:12px 0 8px;font-weight:700}
-.feature p{margin:0 0 10px;font-size:15px;line-height:1.6}
-.feature figcaption{font-family:var(--sans);font-size:11px;color:var(--muted);padding-top:6px}
+.feature p{margin:0 0 10px;font-size:16px;line-height:1.6}
+.feature figcaption{font-family:var(--sans);font-size:12px;color:var(--muted);padding-top:6px}
 .briefs{display:flex;flex-direction:column}
 .brief{padding:13px 0;border-bottom:1px solid var(--hair)}
 .brief:first-child{padding-top:0}
@@ -134,14 +135,14 @@ nav.views kbd{display:none}
 .brief a{display:grid;grid-template-columns:1fr;gap:14px;align-items:start}
 .brief.hasimg a{grid-template-columns:1fr 110px}
 .brief .thumb{width:110px;height:74px;object-fit:cover}
-.brief h3{font-family:var(--serif);font-size:15.5px;line-height:1.3;margin:0 0 5px;font-weight:700}
+.brief h3{font-family:var(--serif);font-size:16.5px;line-height:1.3;margin:0 0 5px;font-weight:700}
 
 /* ---- do editor ---- */
 .editor{background:var(--ivory);border-top:1px solid var(--hair);border-bottom:1px solid var(--hair);
   margin:26px 0;padding:20px 24px}
-.editor h4{font-family:var(--sans);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+.editor h4{font-family:var(--sans);font-size:12px;letter-spacing:.18em;text-transform:uppercase;
   margin:0 0 10px}
-.editor p{margin:0 0 8px;font-size:15px;line-height:1.6}
+.editor p{margin:0 0 8px;font-size:16px;line-height:1.6}
 .editor a{color:var(--blue);text-decoration:underline}
 
 /* ---- radar (opinião) ---- */
@@ -157,39 +158,39 @@ nav.views kbd{display:none}
 .opncol .body{font-size:14.5px;line-height:1.6}
 .opncol .body::first-letter{font-size:2.6em;font-weight:700;float:left;line-height:.85;padding:3px 7px 0 0}
 .opncol .play{font-size:14px;margin-top:10px;padding-top:10px;border-top:1px solid var(--hair)}
-.opncol .play b{font-family:var(--sans);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase}
-.meta-line{font-family:var(--sans);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;
+.opncol .play b{font-family:var(--sans);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase}
+.meta-line{font-family:var(--sans);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;
   color:var(--muted);display:flex;gap:14px;margin-top:10px;font-variant-numeric:tabular-nums}
 
 /* ---- conteúdo / studio ---- */
 .seeds{display:grid;grid-template-columns:1fr;gap:22px;padding:18px 0}
 @media(min-width:900px){.seeds{grid-template-columns:repeat(3,1fr)}}
 .seed{border:1px solid var(--hair);padding:18px}
-.seed .plat{font-family:var(--sans);font-size:11px;font-weight:700;letter-spacing:.14em;
+.seed .plat{font-family:var(--sans);font-size:12px;font-weight:700;letter-spacing:.14em;
   text-transform:uppercase;color:var(--blue)}
 .seed h3{font-family:var(--serif);font-size:18px;line-height:1.3;margin:8px 0 10px}
 .seed blockquote{margin:0 0 10px;padding:10px 14px;background:var(--ivory);
-  border-left:3px solid var(--hair-strong);font-size:13.5px;line-height:1.55;white-space:pre-wrap}
-.seed .tags{font-family:var(--sans);font-size:11.5px;color:var(--blue);word-break:break-word}
+  border-left:3px solid var(--hair-strong);font-size:14.5px;line-height:1.55;white-space:pre-wrap}
+.seed .tags{font-family:var(--sans);font-size:12.5px;color:var(--blue);word-break:break-word}
 .copybtn{appearance:none;cursor:pointer;margin-top:12px;background:var(--ink);color:var(--paper);
-  border:1px solid var(--ink);font-family:var(--sans);font-size:11px;font-weight:600;
+  border:1px solid var(--ink);font-family:var(--sans);font-size:12px;font-weight:600;
   letter-spacing:.1em;text-transform:uppercase;padding:8px 14px}
 .copybtn:hover{background:var(--blue);border-color:var(--blue)}
 
 /* ---- tabelas (arquivo / fontes) ---- */
 table{width:100%;border-collapse:collapse;font-size:14px}
 .tblwrap{overflow-x:auto;padding:16px 0 30px}
-th{font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.14em;
+th{font-family:var(--sans);font-size:11.5px;font-weight:700;letter-spacing:.14em;
   text-transform:uppercase;text-align:left;color:var(--muted);
   border-bottom:2px solid var(--ink);padding:8px 14px 8px 0}
 td{border-bottom:1px solid var(--hair);padding:10px 14px 10px 0;vertical-align:top}
-td.num{font-variant-numeric:tabular-nums;font-family:var(--sans);font-size:13px}
+td.num{font-variant-numeric:tabular-nums;font-family:var(--sans);font-size:14px}
 tr.today td{background:var(--ivory)}
 .headcell{font-weight:700}
 
 /* ---- fontes / RSS ---- */
 .rssbox{background:var(--blue-soft);border:1px solid var(--hair);padding:18px 20px;margin:18px 0}
-.rssbox h4{font-family:var(--sans);font-size:11px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 8px}
+.rssbox h4{font-family:var(--sans);font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin:0 0 8px}
 .rssbox code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;
   word-break:break-all;display:block;background:var(--paper);border:1px solid var(--hair);
   padding:8px 10px;margin:8px 0}
@@ -197,7 +198,7 @@ tr.today td{background:var(--ivory)}
 .howto{max-width:74ch;font-size:14.5px;line-height:1.6}
 .howto code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px;background:var(--ivory);
   border:1px solid var(--hair);padding:1px 5px;word-break:break-all}
-.stat-ok,.stat-off{font-family:var(--sans);font-size:10.5px;font-weight:700;letter-spacing:.1em;
+.stat-ok,.stat-off{font-family:var(--sans);font-size:11.5px;font-weight:700;letter-spacing:.1em;
   text-transform:uppercase}
 .stat-ok{color:var(--c-mer)} .stat-off{color:var(--c-eng)}
 
@@ -205,12 +206,12 @@ tr.today td{background:var(--ivory)}
 main section.view{display:none}
 main section.view.on{display:block}
 .viewhead{padding:26px 0 4px}
-.viewhead h2{font-family:var(--serif);font-size:clamp(24px,3.4vw,34px);margin:6px 0 4px}
+.viewhead h2{font-family:var(--display);font-weight:700;font-size:clamp(26px,3.4vw,36px);margin:6px 0 4px}
 .viewhead .sub{color:var(--muted);font-size:15px;max-width:70ch}
 
 /* ---- rodapé ---- */
 footer{border-top:3px double var(--hair-strong);margin-top:34px;padding:18px 0 40px;
-  font-family:var(--sans);font-size:11.5px;color:var(--muted)}
+  font-family:var(--sans);font-size:12.5px;color:var(--muted)}
 footer .cols{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 footer b{color:var(--ink);font-weight:600}
 @media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important;transition:none!important}}
@@ -867,7 +868,7 @@ footer b{color:var(--ink);font-weight:600}
 
 <div class="wrap datebar" id="datebar"></div>
 <header class="wrap masthead">
-  <h1 class="name">AEC News</h1>
+  <h1 class="name">Agio News</h1>
   <div class="tag">O diário da construção civil</div>
 </header>
 <div class="wrap"><div class="rule2"></div></div>
@@ -1163,7 +1164,7 @@ if(!srcs.length) st.replaceWith(el("p",{class:"howto",text:"Lista de fontes indi
 
 /* rodapé */
 document.getElementById("foot").append(
-  el("div",null,el("b",{text:"AEC NEWS"})," — edição "+(edno||"")+" · "+(M.date||"")+" · rev "+(M.revision||"")),
+  el("div",null,el("b",{text:"AGIO NEWS"})," — edição "+(edno||"")+" · "+(M.date||"")+" · rev "+(M.revision||"")),
   el("div",{text:(M.story_count!=null?M.story_count+" notícias · ":"")+"curadoria e edição automatizadas, diariamente às 08h (BRT)"}),
   el("div",null,"Feed RSS disponível na aba ",el("b",{text:"Fontes"}))
 );
